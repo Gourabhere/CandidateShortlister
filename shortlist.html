@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Processor App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --primary-light: #8b5cf6;
+            --secondary: #10b981;
+            --accent: #f97316;
+            --background-dark: #111827;
+            --background-light: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #f3f4f6;
+            --card-dark: rgba(17, 24, 39, 0.8);
+            --card-light: rgba(249, 250, 251, 0.8);
+            --shadow-color: rgba(107, 114, 128, 0.25);
+            --neon-glow: 0 0 10px var(--primary-light);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .dark {
+            background-color: var(--background-dark);
+            color: var(--text-light);
+        }
+
+        .light {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+        }
+
+        .glass {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+        }
+
+        .glass.dark {
+            background-color: var(--card-dark);
+        }
+
+        .glass.light {
+            background-color: var(--card-light);
+        }
+
+        .neon-border {
+            border: 1px solid var(--primary-light);
+            box-shadow: var(--neon-glow);
+        }
+
+        .neon-text {
+            color: var(--primary-light);
+            text-shadow: var(--neon-glow);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            box-shadow: var(--neon-glow);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 100%;
+            height: 2px;
+            background-color: currentColor;
+            transition: all 0.3s;
+        }
+
+        .hamburger.active div:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger.active div:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active div:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 10;
+            top: 0;
+            left: 0;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        .sidenav.dark {
+            background-color: var(--background-dark);
+        }
+
+        .sidenav.light {
+            background-color: var(--background-light);
+        }
+
+        .sidenav .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .filter-item {
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(107, 114, 128, 0.2);
+        }
+
+        tr {
+            transition: background-color 0.3s;
+        }
+
+        tr:hover {
+            background-color: rgba(107, 114, 128, 0.1);
+        }
+
+        .dark th {
+            background-color: rgba(31, 41, 55, 0.8);
+        }
+
+        .light th {
+            background-color: rgba(243, 244, 246, 0.8);
+        }
+
+        .input-field {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .dark .input-field {
+            background-color: rgba(31, 41, 55, 0.8);
+            color: var(--text-light);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+        }
+
+        .light .input-field {
+            background-color: white;
+            color: var(--text-dark);
+            border: 1px solid rgba(209, 213, 219, 0.5);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2);
+        }
+
+        select.input-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .manage-columns {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .manage-columns.expanded {
+            max-height: 500px;
+        }
+        
+        .ai-response {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .dark .ai-response {
+            background-color: rgba(31, 41, 55, 0.5);
+        }
+        
+        .light .ai-response {
+            background-color: rgba(243, 244, 246, 0.5);
+        }
+        
+        .feedback-form {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .dark .feedback-form {
+            background-color: rgba(31, 41, 55, 0.5);
+        }
+        
+        .light .feedback-form {
+            background-color: rgba(243, 244, 246, 0.5);
+        }
+        
+        .feedback-item {
+            margin-bottom: 10px;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(109, 40, 217, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="min-h-screen px-4 py-6">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <div class="hamburger mr-4" id="menuBtn">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <h1 class="text-2xl font-bold gradient-text">Excel Processor</h1>
+            </div>
+            <div class="flex items-center">
+                <span class="mr-2"><i class="fas fa-moon"></i></span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="ml-2"><i class="fas fa-sun"></i></span>
+            </div>
+        </header>
+
+        <!-- Sidenav for Filters -->
+        <div class="sidenav glass dark" id="filterSidenav">
+            <span class="close-btn" id="closeFilterBtn">&times;</span>
+            <div class="p-4">
+                <h2 class="text-xl font-bold mb-4">Filters</h2>
+                <div id="filterContainer">
+                    <div class="filter-item">
+                        <label for="skillsetFilter" class="block mb-2 font-medium">Skillset</label>
+                        <input type="text" id="skillsetFilter" class="input-field" placeholder="Enter skills (comma separated)">
+                    </div>
+                    <!-- Dynamic filters will be added here -->
+                </div>
+                <button id="applyFiltersBtn" class="btn btn-primary w-full mt-4">Apply Filters</button>
+                <button id="resetFiltersBtn" class="btn btn-secondary w-full mt-2">Reset Filters</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main>
+            <!-- File Upload Section -->
+            <section class="glass dark p-4 rounded-lg mb-6">
+                <div class="flex flex-col items-center">
+                    <label for="excelFile" class="btn btn-primary mb-2">
+                        <i class="fas fa-file-excel mr-2"></i>Upload Excel
+                    </label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
+                    <p id="fileName" class="text-sm opacity-70 mt-1"></p>
+                </div>
+            </section>
+
+            <!-- Search Section -->
+            <section class="glass dark p-4 rounded-lg mb-6">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-search mr-2"></i>
+                    <input type="text" id="searchInput" class="input-field" placeholder="Search across all columns...">
+                </div>
+                
+                <!-- Column Management Section (Collapsed by default) -->
+                <div class="mt-4">
+                    <div class="flex justify-between items-center cursor-pointer" id="manageColumnsToggle">
+                        <h3 class="text-lg font-medium">Manage Columns</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="manage-columns" id="manageColumnsSection">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2" id="columnToggleContainer">
+                            <!-- Dynamic column toggles will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Assistant Section -->
+            <section class="glass dark p-4 rounded-lg mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-medium"><i class="fas fa-robot mr-2"></i>AI Assistant</h2>
+                </div>
+                <div class="flex items-center mb-2">
+                    <input type="text" id="aiQuestion" class="input-field" placeholder="Ask anything about your data...">
+                    <button id="askAiBtn" class="btn btn-primary ml-2">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div id="aiResponseContainer" class="ai-response glass dark hide-scroll">
+                    <p class="text-sm opacity-70">AI responses will appear here...</p>
+                </div>
+            </section>
+
+            <!-- Tabs -->
+            <div class="mb-4 flex border-b">
+                <button id="allDataTab" class="py-2 px-4 font-medium tab-btn active">All Data</button>
+                <button id="shortlistedTab" class="py-2 px-4 font-medium tab-btn">Shortlisted</button>
+            </div>
+
+            <!-- All Data Tab -->
+            <div id="allDataContent" class="tab active">
+                <div class="glass dark table-container">
+                    <table id="dataTable">
+                        <thead>
+                            <tr id="tableHeader">
+                                <th><input type="checkbox" id="selectAllCheckbox"></th>
+                                <!-- Dynamic headers will be added here -->
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Table data will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noDataMessage" class="text-center py-4">
+                    <p>Upload an Excel file to get started</p>
+                </div>
+            </div>
+
+            <!-- Shortlisted Tab -->
+            <div id="shortlistedContent" class="tab">
+                <div class="mb-4">
+                    <button id="exportExcelBtn" class="btn btn-secondary">
+                        <i class="fas fa-file-export mr-2"></i>Export to Excel
+                    </button>
+                </div>
+                <div class="glass dark table-container">
+                    <table id="shortlistedTable">
+                        <thead>
+                            <tr id="shortlistedTableHeader">
+                                <!-- Dynamic headers will be added here -->
+                                <th>Feedback</th>
+                                <th>Contacted</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shortlistedTableBody">
+                            <!-- Shortlisted data will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noShortlistedMessage" class="text-center py-4">
+                    <p>No items have been shortlisted yet</p>
+                </div>
+                
+                <!-- Feedback Form (Hidden Initially) -->
+                <div id="feedbackForm" class="feedback-form glass dark hidden">
+                    <h3 class="text-lg font-medium mb-3">Add Feedback</h3>
+                    <input type="hidden" id="feedbackRowId">
+                    
+                    <div class="feedback-item">
+                        <label for="feedbackText" class="block mb-1">Feedback:</label>
+                        <textarea id="feedbackText" class="input-field" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="feedback-item flex items-center">
+                        <label for="contactedCheckbox" class="mr-2">Contacted:</label>
+                        <input type="checkbox" id="contactedCheckbox">
+                    </div>
+                    
+                    <div class="flex justify-end mt-3">
+                        <button id="cancelFeedbackBtn" class="btn btn-secondary mr-2">Cancel</button>
+                        <button id="saveFeedbackBtn" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // =============== GLOBAL VARIABLES ===============
+        const GEMINI_API_KEY = "AIzaSyB5gWrP1HkzA0gDJ1dBSeiQiVJhjlS6evg";
+        let excelData = [];
+        let filteredData = [];
+        let shortlistedData = [];
+        let headers = [];
+        let visibleColumns = [];
+        let theme = 'dark';
+        let feedbackData = {}; // Store feedback by row ID
+
+        // =============== DOM ELEMENTS ===============
+        const themeToggle = document.getElementById('themeToggle');
+        const menuBtn = document.getElementById('menuBtn');
+        const filterSidenav = document.getElementById('filterSidenav');
+        const closeFilterBtn = document.getElementById('closeFilterBtn');
+        const excelFileInput = document.getElementById('excelFile');
+        const fileName = document.getElementById('fileName');
+        const dataTable = document.getElementById('dataTable');
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('tableBody');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const shortlistedTable = document.getElementById('shortlistedTable');
+        const shortlistedTableHeader = document.getElementById('shortlistedTableHeader');
+        const shortlistedTableBody = document.getElementById('shortlistedTableBody');
+        const noShortlistedMessage = document.getElementById('noShortlistedMessage');
+        const filterContainer = document.getElementById('filterContainer');
+        const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+        const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        const searchInput = document.getElementById('searchInput');
+        const allDataTab = document.getElementById('allDataTab');
+        const shortlistedTab = document.getElementById('shortlistedTab');
+        const allDataContent = document.getElementById('allDataContent');
+        const shortlistedContent = document.getElementById('shortlistedContent');
+        const columnToggleContainer = document.getElementById('columnToggleContainer');
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+        const aiQuestion = document.getElementById('aiQuestion');
+        const askAiBtn = document.getElementById('askAiBtn');
+        const aiResponseContainer = document.getElementById('aiResponseContainer');
+        const manageColumnsToggle = document.getElementById('manageColumnsToggle');
+        const manageColumnsSection = document.getElementById('manageColumnsSection');
+        const feedbackForm = document.getElementById('feedbackForm');
+        const feedbackRowId = document.getElementById('feedbackRowId');
+        const feedbackText = document.getElementById('feedbackText');
+        const contactedCheckbox = document.getElementById('contactedCheckbox');
+        const cancelFeedbackBtn = document.getElementById('cancelFeedbackBtn');
+        const saveFeedbackBtn = document.getElementById('saveFeedbackBtn');
+
+        // =============== EVENT LISTENERS ===============
+        // Theme Toggle
+        themeToggle.addEventListener('change', toggleTheme);
+
+        // Menu Button
+        menuBtn.addEventListener('click', toggleMenu);
+        closeFilterBtn.addEventListener('click', closeMenu);
+
+        // File Upload
+        excelFileInput.addEventListener('change', handleFileUpload);
+
+        // Filter Buttons
+        applyFiltersBtn.addEventListener('click', applyFilters);
+        resetFiltersBtn.addEventListener('click', resetFilters);
+
+        // Select All Checkbox
+        selectAllCheckbox.addEventListener('change', toggleSelectAll);
+
+        // Search Input
+        searchInput.addEventListener('input', handleSearch);
+
+        // Tabs
+        allDataTab.addEventListener('click', () => switchTab('all'));
+        shortlistedTab.addEventListener('click', () => switchTab('shortlisted'));
+
+        // Export Button
+        exportExcelBtn.addEventListener('click', exportToExcel);
+
+        // AI Assistant
+        askAiBtn.addEventListener('click', askAi);
+        aiQuestion.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') askAi();
+        });
+
+        // Manage Columns Toggle
+        manageColumnsToggle.addEventListener('click', toggleManageColumns);
+
+        // Feedback Form
+        cancelFeedbackBtn.addEventListener('click', hideFeedbackForm);
+        saveFeedbackBtn.addEventListener('click', saveFeedback);
+
+        // =============== FUNCTIONS ===============
+        
+        // Theme Functions
+        function toggleTheme() {
+            const body = document.body;
+            const sidenav = document.getElementById('filterSidenav');
+            const glass = document.querySelectorAll('.glass');
+            
+            if (themeToggle.checked) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                sidenav.classList.remove('dark');
+                sidenav.classList.add('light');
+                glass.forEach(el => {
+                    el.classList.remove('dark');
+                    el.classList.add('light');
+                });
+                theme = 'light';
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                sidenav.classList.remove('light');
+                sidenav.classList.add('dark');
+                glass.forEach(el => {
+                    el.classList.remove('light');
+                    el.classList.add('dark');
+                });
+                theme = 'dark';
+            }
+        }
+
+        // Menu Functions
+        function toggleMenu() {
+            menuBtn.classList.toggle('active');
+            if (filterSidenav.style.width === "280px") {
+                closeMenu();
+            } else {
+                filterSidenav.style.width = "280px";
+            }
+        }
+
+        function closeMenu() {
+            menuBtn.classList.remove('active');
+            filterSidenav.style.width = "0";
+        }
+
+        // Manage Columns Toggle
+        function toggleManageColumns() {
+            const chevron = manageColumnsToggle.querySelector('i');
+            manageColumnsSection.classList.toggle('expanded');
+            
+            if (manageColumnsSection.classList.contains('expanded')) {
+                chevron.classList.remove('fa-chevron-down');
+                chevron.classList.add('fa-chevron-up');
+            } else {
+                chevron.classList.remove('fa-chevron-up');
+                chevron.classList.add('fa-chevron-down');
+            }
+        }
+
+        // File Upload Functions
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            fileName.textContent = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                
+                if (jsonData.length > 0) {
+                    processExcelData(jsonData);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processExcelData(data) {
+            headers = data[0];
+            
+            // Set visible columns initially to all columns
+            visibleColumns = [...headers];
+            
+            // Format the data as objects
+            excelData = [];
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                const rowData = {};
+                
+                for (let j = 0; j < headers.length; j++) {
+                    rowData[headers[j]] = row[j] || '';
+                }
+                
+                // Add a unique row ID
+                rowData._id = `row-${i}`;
+                excelData.push(rowData);
+            }
+            
+            // Initialize filtered data
+            filteredData = [...excelData];
+            
+            // Show the data
+            renderTable();
+            
+            // Create filter options
+            createFilterOptions();
+            
+            // Create column toggles
+            createColumnToggles();
+            
+            // Hide no data message
+            noDataMessage.style.display = 'none';
+        }
+
+        // Table Rendering Functions
+        function renderTable() {
+            // Clear existing content
+            tableHeader.innerHTML = '<th><input type="checkbox" id="selectAllCheckbox"></th>';
+            tableBody.innerHTML = '';
+            
+            // Re-add event listener for select all
+            document.getElementById('selectAllCheckbox').addEventListener('change', toggleSelectAll);
+            
+            // Add headers
+            headers.forEach(header => {
+                if (visibleColumns.includes(header)) {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    tableHeader.appendChild(th);
+                }
+            });
+            
+            // Add rows
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.dataset.id = row._id;
+                
+                // Add checkbox cell
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'row-checkbox';
+                checkbox.dataset.id = row._id;
+                checkbox.addEventListener('change', toggleRowSelection);
+                checkboxCell.appendChild(checkbox);
+                tr.appendChild(checkboxCell);
+                
+                // Add data cells
+                headers.forEach(header => {
+                    if (visibleColumns.includes(header)) {
+                        const td = document.createElement('td');
+                        td.textContent = row[header] || '';
+                        tr.appendChild(td);
+                    }
+                });
+                
+                tableBody.appendChild(tr);
+            });
+            
+            // Disable select all if no data
+            if (filteredData.length === 0) {
+                document.getElementById('selectAllCheckbox').disabled = true;
+            } else {
+                document.getElementById('selectAllCheckbox').disabled = false;
+            }
+        }
+
+        function renderShortlistedTable() {
+            // Clear existing content
+            shortlistedTableHeader.innerHTML = '';
+            shortlistedTableBody.innerHTML = '';
+            
+            // Add headers
+            headers.forEach(header => {
+                if (visibleColumns.includes(header)) {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    shortlistedTableHeader.appendChild(th);
+                }
+            });
+            
+            // Add feedback and contacted headers
+            const feedbackTh = document.createElement('th');
+            feedbackTh.textContent = 'Feedback';
+            shortlistedTableHeader.appendChild(feedbackTh);
+            
+            const contactedTh = document.createElement('th');
+            contactedTh.textContent = 'Contacted';
+            shortlistedTableHeader.appendChild(contactedTh);
+            
+            // Add rows
+            shortlistedData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.dataset.id = row._id;
+                
+                // Add data cells
+                headers.forEach(header => {
+                    if (visibleColumns.includes(header)) {
+                        const td = document.createElement('td');
+                        td.textContent = row[header] || '';
+                        tr.appendChild(td);
+                    }
+                });
+                
+                // Add feedback cell
+                const feedbackTd = document.createElement('td');
+                const feedbackBtn = document.createElement('button');
+                feedbackBtn.innerHTML = '<i class="fas fa-comment-alt"></i>';
+                feedbackBtn.className = 'p-1 rounded text-white';
+                
+                if (feedbackData[row._id] && feedbackData[row._id].feedback) {
+                    feedbackBtn.className += ' bg-green-500';
+                    feedbackBtn.title = feedbackData[row._id].feedback;
+                } else {
+                    feedbackBtn.className += ' bg-gray-500';
+                    feedbackBtn.title = 'Add feedback';
+                }
+                
+                feedbackBtn.addEventListener('click', () => showFeedbackForm(row._id));
+                feedbackTd.appendChild(feedbackBtn);
+                tr.appendChild(feedbackTd);
+                
+                // Add contacted cell
+                const contactedTd = document.createElement('td');
+                const contactedIcon = document.createElement('i');
+                
+                if (feedbackData[row._id] && feedbackData[row._id].contacted) {
+                    contactedIcon.className = 'fas fa-check-circle text-green-500';
+                } else {
+                    contactedIcon.className = 'fas fa-times-circle text-red-500';
+                }
+                
+                contactedTd.appendChild(contactedIcon);
+                tr.appendChild(contactedTd);
+                
+                shortlistedTableBody.appendChild(tr);
+            });
+            
+            // Show/hide no shortlisted message
+            if (shortlistedData.length === 0) {
+                noShortlistedMessage.style.display = 'block';
+            } else {
+                noShortlistedMessage.style.display = 'none';
+            }
+        }
+
+        // Filter Functions
+        function createFilterOptions() {
+            // Clear existing filters except skillset
+            const children = filterContainer.children;
+            for (let i = children.length - 1; i >= 0; i--) {
+                if (!children[i].querySelector('#skillsetFilter')) {
+                    filterContainer.removeChild(children[i]);
+                }
+            }
+            
+            // Add dropdown filters for each header except for the "Primary Skill" column
+            headers.forEach(header => {
+                if (header !== 'Primary Skill') {
+                    const uniqueValues = [...new Set(excelData.map(row => row[header]))].filter(Boolean).sort();
+                    
+                    if (uniqueValues.length > 0) {
+                        const filterItem = document.createElement('div');
+                        filterItem.className = 'filter-item';
+                        
+                        const label = document.createElement('label');
+                        label.htmlFor = `filter-${header}`;
+                        label.className = 'block mb-2 font-medium';
+                        label.textContent = header;
+                        
+                        const select = document.createElement('select');
+                        select.id = `filter-${header}`;
+                        select.className = 'input-field';
+                        select.dataset.column = header;
+                        
+                        const emptyOption = document.createElement('option');
+                        emptyOption.value = '';
+                        emptyOption.textContent = 'Select...';
+                        select.appendChild(emptyOption);
+                        
+                        uniqueValues.forEach(value => {
+                            const option = document.createElement('option');
+                            option.value = value;
+                            option.textContent = value;
+                            select.appendChild(option);
+                        });
+                        
+                        filterItem.appendChild(label);
+                        filterItem.appendChild(select);
+                        filterContainer.appendChild(filterItem);
+                    }
+                }
+            });
+        }
+
+        function applyFilters() {
+            // Start with all data
+            let filtered = [...excelData];
+            
+            // Apply skillset filter
+            const skillsetFilter = document.getElementById('skillsetFilter').value.trim();
+            if (skillsetFilter) {
+                const skills = skillsetFilter.split(',').map(skill => skill.trim().toLowerCase());
+                filtered = filtered.filter(row => {
+                    const primarySkill = (row['Primary Skill'] || '').toLowerCase();
+                    return skills.some(skill => primarySkill.includes(skill));
+                });
+            }
+            
+            // Apply dropdown filters
+            const dropdownFilters = document.querySelectorAll('#filterContainer select');
+            dropdownFilters.forEach(filter => {
+                const value = filter.value;
+                const column = filter.dataset.column;
+                
+                if (value) {
+                    filtered = filtered.filter(row => row[column] === value);
+                }
+            });
+            
+            // Update filteredData and render table
+            filteredData = filtered;
+            renderTable();
+            
+            // Close the menu
+            closeMenu();
+        }
+
+        function resetFilters() {
+            // Clear skillset filter
+            document.getElementById('skillsetFilter').value = '';
+            
+            // Clear dropdown filters
+            const dropdownFilters = document.querySelectorAll('#filterContainer select');
+            dropdownFilters.forEach(filter => {
+                filter.value = '';
+            });
+            
+            // Reset filtered data
+            filteredData = [...excelData];
+            renderTable();
+        }
+
+        // Column Management Functions
+        function createColumnToggles() {
+            columnToggleContainer.innerHTML = '';
+            
+            headers.forEach(header => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-container';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `toggle-${header}`;
+                checkbox.checked = visibleColumns.includes(header);
+                checkbox.addEventListener('change', () => toggleColumn(header));
+                
+                const label = document.createElement('label');
+                label.htmlFor = `toggle-${header}`;
+                label.textContent = header;
+                
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                columnToggleContainer.appendChild(div);
+            });
+        }
+
+        function toggleColumn(header) {
+            if (visibleColumns.includes(header)) {
+                visibleColumns = visibleColumns.filter(col => col !== header);
+            } else {
+                visibleColumns.push(header);
+            }
+            
+            renderTable();
+            renderShortlistedTable();
+        }
+
+        // Row Selection Functions
+        function toggleSelectAll() {
+            const isChecked = selectAllCheckbox.checked;
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        }
+
+        function toggleRowSelection(e) {
+            const checkbox = e.target;
+            const rowId = checkbox.dataset.id;
+            
+            if (checkbox.checked) {
+                // Check if row is already shortlisted
+                const isAlreadyShortlisted = shortlistedData.some(row => row._id === rowId);
+                
+                if (!isAlreadyShortlisted) {
+                    // Find the row in filtered data
+                    const row = filteredData.find(row => row._id === rowId);
+                    if (row) {
+                        shortlistedData.push(row);
+                    }
+                }
+            } else {
+                // Remove from shortlisted if present
+                shortlistedData = shortlistedData.filter(row => row._id !== rowId);
+            }
+            
+            // Update shortlisted table if visible
+            if (shortlistedContent.classList.contains('active')) {
+                renderShortlistedTable();
+            }
+        }
+
+        // Search Function
+        function handleSearch() {
+            const searchText = searchInput.value.toLowerCase();
+            
+            if (searchText === '') {
+                filteredData = [...excelData];
+                applyFilters(); // Re-apply any active filters
+                return;
+            }
+            
+            filteredData = excelData.filter(row => {
+                return Object.keys(row).some(key => {
+                    if (key === '_id') return false; // Skip internal ID field
+                    const value = String(row[key]).toLowerCase();
+                    return value.includes(searchText);
+                });
+            });
+            
+            renderTable();
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            if (tab === 'all') {
+                allDataTab.classList.add('active');
+                shortlistedTab.classList.remove('active');
+                allDataContent.classList.add('active');
+                shortlistedContent.classList.remove('active');
+            } else {
+                allDataTab.classList.remove('active');
+                shortlistedTab.classList.add('active');
+                allDataContent.classList.remove('active');
+                shortlistedContent.classList.add('active');
+                renderShortlistedTable();
+            }
+        }
+
+        // Export Function
+        function exportToExcel() {
+            if (shortlistedData.length === 0) {
+                alert("No data to export. Please shortlist some records first.");
+                return;
+            }
+            
+            // Create a worksheet with export data
+            const wsData = [visibleColumns.concat(['Feedback', 'Contacted'])];
+            
+            shortlistedData.forEach(row => {
+                const rowData = [];
+                
+                visibleColumns.forEach(header => {
+                    rowData.push(row[header] || '');
+                });
+                
+                // Add feedback and contacted status
+                rowData.push(feedbackData[row._id]?.feedback || '');
+                rowData.push(feedbackData[row._id]?.contacted ? 'Yes' : 'No');
+                
+                wsData.push(rowData);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Shortlisted");
+            
+            // Generate file name based on date
+            const date = new Date();
+            const fileName = `Shortlisted_${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}.xlsx`;
+            
+            // Export the file
+            XLSX.writeFile(wb, fileName);
+        }
+
+        // AI Assistant Functions
+        async function askAi() {
+            const question = aiQuestion.value.trim();
+            if (!question) return;
+            
+            // Clear previous response and show loading indicator
+            aiResponseContainer.innerHTML = '<p>Processing your question...</p>';
+            
+            if (!excelData.length) {
+                aiResponseContainer.innerHTML = '<p class="text-red-500">Please upload an Excel file first.</p>';
+                return;
+            }
+            
+            try {
+                // Convert data to text format for the AI
+                let dataText = "";
+                
+                // Add headers
+                dataText += headers.join(", ") + "\n";
+                
+                // Add a sample of the data (max 50 rows to avoid token limits)
+                const sampleSize = Math.min(excelData.length, 50);
+                for (let i = 0; i < sampleSize; i++) {
+                    const row = excelData[i];
+                    dataText += headers.map(h => row[h] || '').join(", ") + "\n";
+                }
+                
+                // Build prompt
+                const prompt = `
+                I have an Excel dataset with the following structure and content:
+                
+                ${dataText}
+                
+                Question: ${question}
+                
+                Please analyze this data and answer the question. Provide a clear, concise response with relevant insights.
+                `;
+                
+                // Call Gemini API
+                const response = await fetchGeminiResponse(prompt);
+                
+                // Display the response
+                aiResponseContainer.innerHTML = `<div class="markdown">${formatAiResponse(response)}</div>`;
+                
+                // Clear the input
+                aiQuestion.value = '';
+                
+            } catch (error) {
+                aiResponseContainer.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+            }
+        }
+
+        async function fetchGeminiResponse(prompt) {
+        // Updated API URL to use the latest version and model name
+            const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+        
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      contents: [{
+                          parts: [{
+                              text: prompt
+                          }]
+                      }]
+                  })
+              });
+              
+              if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.error.message || 'Error calling Gemini API');
+              }
+        
+              const data = await response.json();
+              
+              if (!data.candidates || data.candidates.length === 0) {
+                  throw new Error('No response from AI');
+              }
+              
+              return data.candidates[0].content.parts[0].text;
+          }
+
+        function formatAiResponse(text) {
+            // Convert markdown-like text to HTML
+            return text
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+        }
+
+        // Feedback Form Functions
+        function showFeedbackForm(rowId) {
+            feedbackRowId.value = rowId;
+            
+            // Pre-fill with existing feedback data if available
+            if (feedbackData[rowId]) {
+                feedbackText.value = feedbackData[rowId].feedback || '';
+                contactedCheckbox.checked = feedbackData[rowId].contacted || false;
+            } else {
+                feedbackText.value = '';
+                contactedCheckbox.checked = false;
+            }
+            
+            feedbackForm.classList.remove('hidden');
+        }
+
+        function hideFeedbackForm() {
+            feedbackForm.classList.add('hidden');
+        }
+
+        function saveFeedback() {
+            const rowId = feedbackRowId.value;
+            const feedback = feedbackText.value.trim();
+            const contacted = contactedCheckbox.checked;
+            
+            // Save feedback data
+            feedbackData[rowId] = {
+                feedback: feedback,
+                contacted: contacted
+            };
+            
+            // Update the UI
+            renderShortlistedTable();
+            
+            // Hide the form
+            hideFeedbackForm();
+        }
+
+        // Initialize with dark theme
+        document.body.classList.add('dark');
+    </script>
+</body>
+</html>
+
