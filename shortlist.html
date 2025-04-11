@@ -17,14 +17,20 @@
             --background-light: #f9fafb;
             --text-dark: #1f2937;
             --text-light: #f3f4f6;
-            --card-dark: rgba(31, 41, 55, 0.7); /* Darker card */
-            --card-light: rgba(255, 255, 255, 0.7); /* Lighter card */
+            --card-dark: rgba(31, 41, 55, 0.7);
+            --card-light: rgba(255, 255, 255, 0.7);
             --border-dark: rgba(55, 65, 81, 0.8);
             --border-light: rgba(209, 213, 219, 0.8);
             --shadow-color-dark: rgba(0, 0, 0, 0.3);
             --shadow-color-light: rgba(107, 114, 128, 0.2);
             --danger: #ef4444;
             --danger-light: #f87171;
+            --input-bg-dark: rgba(55, 65, 81, 0.8);
+            --input-bg-light: rgba(255, 255, 255, 0.9);
+            --dropdown-bg-dark: #2d3748;
+            --dropdown-bg-light: #ffffff;
+            --option-hover-dark: rgba(75, 85, 99, 0.7);
+            --option-hover-light: #f7fafc;
         }
 
         /* Base styles */
@@ -44,14 +50,15 @@
             --card-bg: var(--card-dark);
             --border-color: var(--border-dark);
             --shadow-color-current: var(--shadow-color-dark);
-            --input-bg: rgba(55, 65, 81, 0.8);
-            --input-border: rgba(75, 85, 99, 0.5);
+            --input-bg: var(--input-bg-dark);
             --th-bg: rgba(31, 41, 55, 0.9);
             --hover-bg: rgba(55, 65, 81, 0.5);
-            --selected-bg: rgba(139, 92, 246, 0.2); /* Primary light with alpha */
+            --selected-bg: rgba(139, 92, 246, 0.2);
             --details-bg: rgba(55, 65, 81, 0.2);
             --markdown-pre-bg: rgba(55, 65, 81, 0.7);
             --markdown-code-bg: rgba(75, 85, 99, 0.7);
+            --dropdown-bg: var(--dropdown-bg-dark);
+            --option-hover: var(--option-hover-dark);
         }
 
         .light {
@@ -60,14 +67,15 @@
             --card-bg: var(--card-light);
             --border-color: var(--border-light);
             --shadow-color-current: var(--shadow-color-light);
-            --input-bg: rgba(255, 255, 255, 0.9);
-            --input-border: rgba(209, 213, 219, 0.7);
+            --input-bg: var(--input-bg-light);
             --th-bg: rgba(243, 244, 246, 0.9);
             --hover-bg: rgba(229, 231, 235, 0.5);
-            --selected-bg: rgba(196, 181, 253, 0.3); /* Primary lighter with alpha */
+            --selected-bg: rgba(196, 181, 253, 0.3);
             --details-bg: rgba(229, 231, 235, 0.4);
             --markdown-pre-bg: rgba(229, 231, 235, 0.8);
             --markdown-code-bg: rgba(209, 213, 219, 0.8);
+            --dropdown-bg: var(--dropdown-bg-light);
+            --option-hover: var(--option-hover-light);
         }
 
         .glass {
@@ -128,18 +136,13 @@
         tr.selected { background-color: var(--selected-bg) !important; }
         tr:hover:not(.selected) { background-color: var(--hover-bg); }
 
-        .input-field { padding: 0.5rem; border-radius: 0.375rem; width: 100%; transition: all 0.3s; background-color: var(--input-bg); border: 1px solid var(--input-border); color: inherit; }
+        .input-field {
+            padding: 0.5rem; border-radius: 0.375rem; width: 100%; transition: all 0.3s;
+            background-color: var(--input-bg); border: 1px solid var(--border-color); color: inherit;
+        }
         .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2); }
-        /* Style for standard select */
-        select.input-field:not([multiple]) { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
-        /* Style for multi-select to make it more usable */
-        select[multiple].input-field { height: 100px; /* Adjust height as needed */ overflow-y: auto; padding-right: 0.5rem; /* Remove arrow space */ }
-        select[multiple].input-field option { padding: 4px 8px; }
-        select[multiple].input-field option:checked { background-color: var(--primary-light); color: white; }
-        .dark select[multiple].input-field option:checked { background-color: var(--primary); color: white; }
-
         /* Specific style for pagination select */
-        #rowsPerPageSelect { width: auto; min-width: 70px; padding-left: 0.5rem; padding-right: 2rem; background-size: 1.2em 1.2em; }
+        #rowsPerPageSelect { width: auto; min-width: 70px; padding-left: 0.5rem; padding-right: 2rem; background-size: 1.2em 1.2em; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; }
 
 
         .checkbox-container { display: flex; align-items: center; }
@@ -148,7 +151,7 @@
         .manage-columns-container { margin-bottom: 1.5rem; }
         .manage-columns { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .manage-columns.expanded { max-height: 300px; overflow-y: auto; }
-        .ai-response { max-height: calc(100vh - 200px); /* Adjust based on surrounding elements */ overflow-y: auto; margin-top: 10px; padding: 10px; border-radius: 8px; background-color: rgba(0,0,0,0.05); }
+        .ai-response { max-height: calc(100vh - 200px); overflow-y: auto; margin-top: 10px; padding: 10px; border-radius: 8px; background-color: rgba(0,0,0,0.05); }
         .dark .ai-response { background-color: rgba(255,255,255,0.05); }
         .feedback-form { padding: 15px; border-radius: 8px; margin-top: 10px; }
         .feedback-item { margin-bottom: 10px; }
@@ -156,6 +159,22 @@
         .pulse-animation { animation: pulse 2s infinite; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom MultiSelect Styles */
+        .custom-multiselect-container { position: relative; width: 100%; }
+        .custom-multiselect-display { padding: 0.5rem; border-radius: 0.375rem; width: 100%; background-color: var(--input-bg); border: 1px solid var(--border-color); color: inherit; cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: 38px; user-select: none; }
+        .custom-multiselect-display .placeholder { opacity: 0.6; }
+        .custom-multiselect-display .display-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding-right: 5px; }
+        .custom-multiselect-display .arrow { transition: transform 0.2s ease-in-out; font-size: 0.8em; }
+        .custom-multiselect-container.open .custom-multiselect-display { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-color: var(--primary); }
+        .custom-multiselect-container.open .arrow { transform: rotate(180deg); }
+        .custom-multiselect-dropdown { position: absolute; top: 100%; left: 0; right: 0; background-color: var(--dropdown-bg); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 0.375rem 0.375rem; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .custom-multiselect-container.open .custom-multiselect-dropdown { display: block; }
+        .custom-multiselect-option { padding: 0.5rem 0.75rem; cursor: pointer; display: flex; align-items: center; transition: background-color 0.2s; }
+        .custom-multiselect-option:hover { background-color: var(--option-hover); }
+        .custom-multiselect-option input[type="checkbox"] { margin-right: 0.5rem; cursor: pointer; height: 1rem; width: 1rem; }
+        .custom-multiselect-option label { cursor: pointer; flex-grow: 1; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+        .custom-multiselect-option.select-all-option { border-bottom: 1px solid var(--border-color); font-weight: 600; }
 
         /* Shortlist Group Styles */
         .shortlist-group details { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem; background-color: var(--details-bg); }
@@ -187,36 +206,34 @@
     <!-- Header -->
     <header class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 bg-white dark:bg-gray-800 bg-opacity-80 dark:bg-opacity-80 backdrop-filter backdrop-blur-md">
         <div class="flex items-center">
-            <div class="hamburger mr-4 md:hidden" id="menuBtn"> <!-- Hamburger only on small screens -->
+            <div class="hamburger mr-4 md:hidden" id="menuBtn">
                 <div></div> <div></div> <div></div>
             </div>
             <h1 class="text-xl md:text-2xl font-bold gradient-text">Excel Processor</h1>
         </div>
         <div class="flex items-center space-x-3">
-             <!-- Theme Toggle -->
              <button id="themeToggleBtn" class="btn-icon text-lg">
-                 <i class="fas fa-moon"></i> <!-- Initial icon for light mode -->
+                 <i class="fas fa-moon"></i>
              </button>
-             <!-- Desktop Menu Toggle -->
-             <div class="hamburger hidden md:block" id="menuBtnDesktop"> <!-- Hamburger for Desktop -->
+             <div class="hamburger hidden md:block" id="menuBtnDesktop">
                  <div></div> <div></div> <div></div>
              </div>
         </div>
     </header>
 
     <!-- Sidenav for Filters and Columns (Fly-out) -->
-    <div class="sidenav glass hide-scroll" id="filterSidenav"> <!-- Removed theme class, applied dynamically -->
+    <div class="sidenav glass hide-scroll" id="filterSidenav">
         <span class="close-btn" id="closeFilterBtn">×</span>
         <div class="p-4">
             <!-- Column Management Section -->
             <div class="manage-columns-container">
-                <div class="flex justify-between items-center cursor-pointer mb-2" id="manageColumnsToggle">
-                    <h2 class="text-lg font-semibold">Manage Columns</h2>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="manage-columns hide-scroll" id="manageColumnsSection">
-                    <div class="grid grid-cols-1 gap-1 mt-1" id="columnToggleContainer"></div>
-                </div>
+                 <div class="flex justify-between items-center cursor-pointer mb-2" id="manageColumnsToggle">
+                     <h2 class="text-lg font-semibold">Manage Columns</h2>
+                     <i class="fas fa-chevron-down"></i>
+                 </div>
+                 <div class="manage-columns hide-scroll" id="manageColumnsSection">
+                     <div class="grid grid-cols-1 gap-1 mt-1" id="columnToggleContainer"></div>
+                 </div>
             </div>
             <hr class="my-4 border-gray-300 dark:border-gray-600">
             <!-- Filters Section -->
@@ -228,7 +245,7 @@
                         <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Skills Filter</label>
                         <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills..." title="Searches skill/competency columns">
                     </div>
-                    <!-- Dynamic filters will be added here -->
+                    <!-- Dynamic custom multi-select filters will be added here by JS -->
                 </div>
                 <button id="applyFiltersBtn" class="btn btn-primary w-full mt-4 text-sm">Apply Filters</button>
                 <button id="resetFiltersBtn" class="btn btn-secondary w-full mt-2 text-sm">Reset Filters</button>
@@ -243,31 +260,34 @@
         <main class="flex-1 overflow-y-auto p-4 md:p-6">
 
             <!-- File Upload Section -->
-            <section class="glass p-4 rounded-lg mb-6">
-                <div class="flex flex-col items-center">
-                    <label for="excelFile" class="btn btn-primary mb-2 pulse-animation text-sm">
-                        <i class="fas fa-file-excel mr-2"></i>Upload Excel
-                    </label>
-                    <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
-                    <p id="fileName" class="text-sm opacity-70 mt-1">No file selected</p>
-                </div>
-            </section>
+             <section class="glass p-4 rounded-lg mb-6">
+                 <div class="flex flex-col items-center">
+                     <label for="excelFile" class="btn btn-primary mb-2 pulse-animation text-sm">
+                         <i class="fas fa-file-excel mr-2"></i>Upload Excel
+                     </label>
+                     <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
+                     <p id="fileName" class="text-sm opacity-70 mt-1">No file selected</p>
+                 </div>
+             </section>
 
             <!-- Tabs and Search Container -->
-            <div class="mb-4 flex items-center border-b border-gray-300 dark:border-gray-600">
+            <!-- *** RESPONSIVE FIX APPLIED HERE *** -->
+            <div class="mb-4 flex flex-wrap items-center border-b border-gray-300 dark:border-gray-600 gap-y-2">
                 <!-- Tabs -->
                 <div>
                     <button id="allDataTab" class="py-2 px-4 font-medium tab-btn active text-sm">All Data</button>
                     <button id="shortlistedTab" class="py-2 px-4 font-medium tab-btn text-sm">Shortlisted</button>
                 </div>
-                <!-- Search Input (Moved here) -->
-                <div class="relative ml-auto">
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-auto sm:ml-auto">
                      <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                          <i class="fas fa-search"></i>
                      </span>
-                     <input type="text" id="searchInput" class="input-field pl-10 pr-4 py-1 text-sm w-48 lg:w-64" placeholder="Search data...">
+                     <input type="text" id="searchInput" class="input-field pl-10 pr-4 py-1 text-sm w-full sm:w-48 lg:w-64" placeholder="Search data...">
                 </div>
             </div>
+            <!-- *** END OF RESPONSIVE FIX *** -->
+
 
             <!-- All Data Tab Content -->
             <div id="allDataContent" class="tab active">
@@ -281,22 +301,19 @@
                 <!-- Table -->
                 <div class="glass table-container">
                     <table id="dataTable">
-                        <thead>
-                            <tr id="tableHeader">
-                                <!-- Header generated by JS -->
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- Body generated by JS -->
-                        </tbody>
+                        <thead><tr id="tableHeader"></tr></thead>
+                        <tbody id="tableBody"></tbody>
                     </table>
                 </div>
                 <!-- No Data Message -->
                 <div id="noDataMessage" class="text-center py-4 text-gray-500 dark:text-gray-400">
                     <p>Upload an Excel file to get started</p>
                 </div>
+
                 <!-- Pagination Controls -->
-                <div id="paginationControls" class="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
+                <!-- *** RESPONSIVE FIX APPLIED HERE *** -->
+                <div id="paginationControls" class="mt-4 flex flex-wrap items-center justify-between gap-4 text-sm"> <!-- Increased gap -->
+                    <!-- Rows per page section -->
                     <div class="flex items-center gap-2">
                         <label for="rowsPerPageSelect" class="whitespace-nowrap">Rows per page:</label>
                         <select id="rowsPerPageSelect" class="input-field text-sm py-1">
@@ -306,34 +323,26 @@
                             <option value="100">100</option>
                         </select>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span id="paginationInfo" class="opacity-70 whitespace-nowrap">Showing 0-0 of 0</span>
-                        <button id="prevPageBtn" class="btn btn-pagination" disabled title="Previous Page">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button id="nextPageBtn" class="btn btn-pagination" disabled title="Next Page">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                    <!-- Info and Buttons section -->
+                    <div class="flex items-center justify-center sm:justify-end gap-2 flex-wrap"> <!-- Added flex-wrap -->
+                        <span id="paginationInfo" class="opacity-70 whitespace-nowrap order-first sm:order-none">Showing 0-0 of 0</span> <!-- Control order on wrap -->
+                        <button id="prevPageBtn" class="btn btn-pagination" disabled title="Previous Page"><i class="fas fa-chevron-left"></i></button>
+                        <button id="nextPageBtn" class="btn btn-pagination" disabled title="Next Page"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
+                <!-- *** END OF RESPONSIVE FIX *** -->
             </div>
 
             <!-- Shortlisted Tab Content -->
             <div id="shortlistedContent" class="tab">
-                <div class="mb-4 flex flex-wrap gap-2 justify-between items-center">
-                    <button id="exportExcelBtn" class="btn btn-secondary text-sm" disabled>
-                        <i class="fas fa-file-export mr-2"></i>Export Shortlist
-                    </button>
-                     <button id="clearAllShortlistedBtn" class="btn btn-danger text-sm" disabled>
-                         <i class="fas fa-trash-alt mr-2"></i>Clear All
-                     </button>
-                </div>
-                <div id="shortlistedGroupsContainer">
-                     <!-- Shortlisted groups generated by JS -->
-                </div>
-                <div id="noShortlistedMessage" class="text-center py-4 text-gray-500 dark:text-gray-400">
-                    <p>No items have been shortlisted yet</p>
-                </div>
+                 <div class="mb-4 flex flex-wrap gap-2 justify-between items-center">
+                     <button id="exportExcelBtn" class="btn btn-secondary text-sm" disabled><i class="fas fa-file-export mr-2"></i>Export Shortlist</button>
+                     <button id="clearAllShortlistedBtn" class="btn btn-danger text-sm" disabled><i class="fas fa-trash-alt mr-2"></i>Clear All</button>
+                 </div>
+                 <div id="shortlistedGroupsContainer"></div>
+                 <div id="noShortlistedMessage" class="text-center py-4 text-gray-500 dark:text-gray-400">
+                     <p>No items have been shortlisted yet</p>
+                 </div>
             </div>
 
         </main>
@@ -343,9 +352,7 @@
             <h2 class="text-lg font-semibold mb-3 flex items-center"><i class="fas fa-robot mr-2 text-primary"></i>AI Assistant</h2>
             <div class="flex items-center mb-2">
                 <input type="text" id="aiQuestion" class="input-field text-sm flex-grow" placeholder="Ask about 'All Data' tab...">
-                <button id="askAiBtn" class="btn btn-primary ml-2 text-sm p-2 leading-none">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+                <button id="askAiBtn" class="btn btn-primary ml-2 text-sm p-2 leading-none"><i class="fas fa-paper-plane"></i></button>
             </div>
             <div id="aiResponseContainer" class="ai-response flex-1 hide-scroll text-sm">
                 <p class="text-sm opacity-70">Upload a file and ask a question about its data...</p>
@@ -353,7 +360,7 @@
         </aside>
 
          <!-- Feedback Form (Fixed Position) -->
-         <div id="feedbackForm" class="feedback-form glass hidden fixed bottom-4 right-4 w-80 z-40 shadow-lg border" > <!-- Removed theme class -->
+         <div id="feedbackForm" class="feedback-form glass hidden fixed bottom-4 right-4 w-80 z-40 shadow-lg border" >
              <div class="flex justify-between items-center mb-3">
                  <h3 class="text-base font-semibold">Add/Edit Feedback</h3>
                  <button id="cancelFeedbackBtn" class="text-gray-400 hover:text-red-500 text-2xl leading-none">×</button>
@@ -401,7 +408,7 @@
         const shortlistedGroupsContainer = document.getElementById('shortlistedGroupsContainer');
         const noShortlistedMessage = document.getElementById('noShortlistedMessage');
         const filterContainer = document.getElementById('filterContainer');
-        const skillsetFilterInput = document.getElementById('skillsetFilter'); // Specific input for skills
+        let skillsetFilterInput = document.getElementById('skillsetFilter'); // Re-assignable if recreated
         const applyFiltersBtn = document.getElementById('applyFiltersBtn');
         const resetFiltersBtn = document.getElementById('resetFiltersBtn');
         const searchInput = document.getElementById('searchInput'); // Single search input
@@ -442,7 +449,7 @@
         excelFileInput.addEventListener('change', handleFileUpload);
         applyFiltersBtn.addEventListener('click', applyFilters);
         resetFiltersBtn.addEventListener('click', resetFilters);
-        searchInput.addEventListener('input', debounce(handleSearch, 300)); // Use single search input
+        searchInput.addEventListener('input', debounce(handleSearch, 300));
         allDataTab.addEventListener('click', () => switchTab('all'));
         shortlistedTab.addEventListener('click', () => switchTab('shortlisted'));
         exportExcelBtn.addEventListener('click', exportToExcel);
@@ -454,36 +461,38 @@
         saveFeedbackBtn.addEventListener('click', saveFeedback);
         shortlistedGroupsContainer.addEventListener('click', handleShortlistDeleteClick);
         addToShortlistBtn.addEventListener('click', addSelectedToShortlist);
-        tableBody.addEventListener('change', handleTableBodyChange); // Handles checkbox changes
+        tableBody.addEventListener('change', handleTableBodyChange);
         // Pagination Listeners
         rowsPerPageSelect.addEventListener('change', handleRowsPerPageChange);
         prevPageBtn.addEventListener('click', () => changePage(-1));
         nextPageBtn.addEventListener('click', () => changePage(1));
+        // Filter Container Listener (Event Delegation)
+        filterContainer.addEventListener('click', handleFilterContainerClick);
+        document.addEventListener('click', handleDocumentClick);
+
 
         // =============== FUNCTIONS ===============
 
         function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => { clearTimeout(timeout); func(...args); };
-                clearTimeout(timeout); timeout = setTimeout(later, wait);
-            };
+             let timeout;
+             return function executedFunction(...args) {
+                 const later = () => { clearTimeout(timeout); func(...args); };
+                 clearTimeout(timeout); timeout = setTimeout(later, wait);
+             };
         }
 
         function toggleTheme() {
-            const body = document.body;
-            const isDark = body.classList.contains('dark');
-            theme = isDark ? 'light' : 'dark'; // Determine new theme
-            body.classList.toggle('dark', !isDark);
-            body.classList.toggle('light', isDark);
-            themeToggleBtn.innerHTML = `<i class="fas ${isDark ? 'fa-moon' : 'fa-sun'}"></i>`;
+             const body = document.body;
+             const isDark = body.classList.contains('dark');
+             theme = isDark ? 'light' : 'dark';
+             body.classList.toggle('dark', !isDark);
+             body.classList.toggle('light', isDark);
+             themeToggleBtn.innerHTML = `<i class="fas ${isDark ? 'fa-moon' : 'fa-sun'}"></i>`;
              filterSidenav.classList.toggle('dark', !isDark);
              filterSidenav.classList.toggle('light', isDark);
              feedbackForm.classList.toggle('dark', !isDark);
              feedbackForm.classList.toggle('light', isDark);
-             // Re-render shortlist if visible to apply theme to table container
              if (shortlistedContent.classList.contains('active')) renderShortlistedTable();
-             // Re-render main table if visible to update pagination button styles potentially
              if (allDataContent.classList.contains('active')) updatePaginationControls();
         }
 
@@ -504,182 +513,164 @@
         }
 
         function handleFileUpload(e) {
-            const file = e.target.files[0]; if (!file) return;
-            currentFileName = file.name; fileName.textContent = `Processing: ${currentFileName}...`;
-            excelFileInput.disabled = true; document.querySelector('label[for="excelFile"]').classList.remove('pulse-animation');
-            addShortlistStatus.textContent = '';
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const data = new Uint8Array(event.target.result);
-                try {
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    if (!workbook.SheetNames?.length) throw new Error("No sheets found.");
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
-                    if (jsonData.length > 0) {
-                        processExcelData(jsonData, currentFileName); fileName.textContent = `Loaded: ${currentFileName}`;
-                    } else { alert("File is empty."); resetCurrentFileState(); fileName.textContent = `Empty: ${currentFileName}`; }
-                } catch (error) { console.error("Excel Read Error:", error); alert(`Error reading "${currentFileName}": ${error.message}.`); resetCurrentFileState(); fileName.textContent = `Error: ${currentFileName}`; }
+             const file = e.target.files[0]; if (!file) return;
+             currentFileName = file.name; fileName.textContent = `Processing: ${currentFileName}...`;
+             excelFileInput.disabled = true; document.querySelector('label[for="excelFile"]').classList.remove('pulse-animation');
+             addShortlistStatus.textContent = '';
+             const reader = new FileReader();
+             reader.onload = (event) => {
+                 const data = new Uint8Array(event.target.result);
+                 try {
+                     const workbook = XLSX.read(data, { type: 'array' });
+                     if (!workbook.SheetNames?.length) throw new Error("No sheets found.");
+                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                     const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+                     if (jsonData.length > 0) {
+                         processExcelData(jsonData, currentFileName); fileName.textContent = `Loaded: ${currentFileName}`;
+                     } else { alert("File is empty."); resetCurrentFileState(); fileName.textContent = `Empty: ${currentFileName}`; }
+                 } catch (error) { console.error("Excel Read Error:", error); alert(`Error reading "${currentFileName}": ${error.message}.`); resetCurrentFileState(); fileName.textContent = `Error: ${currentFileName}`; }
                  finally { excelFileInput.disabled = false; excelFileInput.value = ''; document.querySelector('label[for="excelFile"]').classList.add('pulse-animation'); }
-            };
-            reader.onerror = () => { console.error("FileReader Error:", reader.error); alert(`Error reading "${currentFileName}".`); resetCurrentFileState(); fileName.textContent = `Read Error: ${currentFileName}`; excelFileInput.disabled = false; excelFileInput.value = ''; document.querySelector('label[for="excelFile"]').classList.add('pulse-animation'); };
-            reader.readAsArrayBuffer(file);
+             };
+             reader.onerror = () => { console.error("FileReader Error:", reader.error); alert(`Error reading "${currentFileName}".`); resetCurrentFileState(); fileName.textContent = `Read Error: ${currentFileName}`; excelFileInput.disabled = false; excelFileInput.value = ''; document.querySelector('label[for="excelFile"]').classList.add('pulse-animation'); };
+             reader.readAsArrayBuffer(file);
         }
 
         function processExcelData(data, sourceFileName) {
-            excelData = []; filteredData = []; skillColumnNames = []; // Reset skill columns
-            allHeaders = data[0].map(h => String(h || '').trim()).filter(Boolean);
-            if (allHeaders.length === 0) { alert(`No headers found in "${sourceFileName}".`); resetCurrentFileState(); return; }
+             excelData = []; filteredData = []; skillColumnNames = [];
+             allHeaders = data[0].map(h => String(h || '').trim()).filter(Boolean);
+             if (allHeaders.length === 0) { alert(`No headers found in "${sourceFileName}".`); resetCurrentFileState(); return; }
 
-            // Identify skill-related columns
-            allHeaders.forEach(header => {
-                const lowerHeader = header.toLowerCase();
-                if (skillKeywords.some(keyword => lowerHeader.includes(keyword))) {
-                    skillColumnNames.push(header);
-                }
-            });
-            console.log("Identified Skill Columns:", skillColumnNames); // For debugging
+             allHeaders.forEach(header => {
+                 const lowerHeader = header.toLowerCase();
+                 if (skillKeywords.some(keyword => lowerHeader.includes(keyword))) {
+                     if (!skillColumnNames.includes(header)) skillColumnNames.push(header);
+                 }
+             });
+             console.log("Identified Skill Columns:", skillColumnNames);
 
-            // Reset visible columns intelligently
-            if (visibleColumns.length === 0 || !allHeaders.some(h => visibleColumns.includes(h))) {
-                visibleColumns = [...allHeaders];
-            } else {
-                visibleColumns = visibleColumns.filter(vc => allHeaders.includes(vc));
-            }
+             if (visibleColumns.length === 0 || !allHeaders.some(h => visibleColumns.includes(h))) {
+                 visibleColumns = [...allHeaders];
+             } else {
+                 visibleColumns = visibleColumns.filter(vc => allHeaders.includes(vc));
+             }
 
-            let rowsAdded = 0;
-            for (let i = 1; i < data.length; i++) {
-                const row = data[i]; if (!row?.length || row.every(cell => cell == null || String(cell).trim() === '')) continue;
-                const rowData = {};
-                for (let j = 0; j < allHeaders.length; j++) { // Use allHeaders length
-                    rowData[allHeaders[j]] = row[j] ?? ''; // Assign based on header index
-                }
-                rowData._id = `${sourceFileName}-row-${i}`; rowData._sourceFile = sourceFileName;
-                excelData.push(rowData); rowsAdded++;
-            }
-            if (rowsAdded === 0) { alert(`No data rows found in "${sourceFileName}".`); resetCurrentFileState(); return; }
+             let rowsAdded = 0;
+             for (let i = 1; i < data.length; i++) {
+                 const row = data[i]; if (!row?.length || row.every(cell => cell == null || String(cell).trim() === '')) continue;
+                 const rowData = {};
+                 for (let j = 0; j < allHeaders.length; j++) {
+                     rowData[allHeaders[j]] = row[j] ?? '';
+                 }
+                 rowData._id = `${sourceFileName}-row-${i}`; rowData._sourceFile = sourceFileName;
+                 excelData.push(rowData); rowsAdded++;
+             }
+             if (rowsAdded === 0) { alert(`No data rows found in "${sourceFileName}".`); resetCurrentFileState(); return; }
 
-            filteredData = [...excelData];
-            currentPage = 1;
-            rowsPerPage = parseInt(rowsPerPageSelect.value) || 25;
+             filteredData = [...excelData];
+             currentPage = 1;
+             rowsPerPage = parseInt(rowsPerPageSelect.value) || 25;
 
-            createColumnToggles();
-            createFilterOptions(); // Generate filters including multi-selects
-            updateShortlistedTab();
-            noDataMessage.style.display = 'none';
-            noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
-            paginationControls.style.display = 'flex';
+             createColumnToggles();
+             createFilterOptions();
+             updateShortlistedTab();
+             noDataMessage.style.display = 'none';
+             noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
+             paginationControls.style.display = 'flex';
 
-            resetFilters(); // Calls applyFilters -> renderTable
-            switchTab('all');
+             resetFilters();
+             switchTab('all');
         }
 
         function resetCurrentFileState() {
-            excelData = []; filteredData = []; allHeaders = []; skillColumnNames = [];
-            // Maybe keep visibleColumns preference? Let's keep them for now.
-            tableHeader.innerHTML = '<th><input type="checkbox" id="selectAllCheckbox" title="Select/Deselect all rows on this page"></th>';
-            tableBody.innerHTML = '';
-            const selectAll = document.getElementById('selectAllCheckbox'); if (selectAll) selectAll.disabled = true;
-            noDataMessage.style.display = 'block'; noDataMessage.textContent = "Upload an Excel file or check previous file for errors.";
-            paginationControls.style.display = 'none';
-            updateAddToShortlistButtonState();
-            currentPage = 1;
-            updatePaginationControls();
-            filterContainer.innerHTML = ''; // Clear dynamic filters
-             // Re-add the static skills filter input structure if it was cleared
-             if (!document.getElementById('skillsetFilter')) {
-                 const skillsDiv = document.createElement('div');
-                 skillsDiv.className = 'filter-item';
-                 skillsDiv.innerHTML = `
-                     <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Skills Filter</label>
-                     <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills..." title="Searches skill/competency columns">
-                 `;
-                 filterContainer.insertBefore(skillsDiv, filterContainer.firstChild);
-                 // Re-assign the global variable after recreating the element
-                 skillsetFilterInput = document.getElementById('skillsetFilter');
-             } else {
-                skillsetFilterInput.value = ''; // Clear existing skills input
-             }
+             excelData = []; filteredData = []; allHeaders = []; skillColumnNames = [];
+             visibleColumns = [];
+             tableHeader.innerHTML = '<th><input type="checkbox" id="selectAllCheckbox" title="Select/Deselect all rows on this page"></th>';
+             tableBody.innerHTML = '';
+             const selectAll = document.getElementById('selectAllCheckbox'); if (selectAll) selectAll.disabled = true;
+             noDataMessage.style.display = 'block'; noDataMessage.textContent = "Upload an Excel file.";
+             paginationControls.style.display = 'none';
+             updateAddToShortlistButtonState();
+             currentPage = 1;
+             updatePaginationControls();
+             columnToggleContainer.innerHTML = '';
+             searchInput.value = '';
 
-            columnToggleContainer.innerHTML = '';
-            searchInput.value = '';
+             filterContainer.innerHTML = ''; // Clear everything first
+             const skillsDiv = document.createElement('div');
+             skillsDiv.className = 'filter-item';
+             skillsDiv.innerHTML = `
+                 <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Skills Filter</label>
+                 <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills..." title="Searches skill/competency columns">
+             `;
+             filterContainer.appendChild(skillsDiv);
+             skillsetFilterInput = document.getElementById('skillsetFilter'); // Re-assign
         }
 
         function renderTable() {
-            tableHeader.innerHTML = ''; tableBody.innerHTML = ''; addShortlistStatus.textContent = '';
+             tableHeader.innerHTML = ''; tableBody.innerHTML = ''; addShortlistStatus.textContent = '';
 
-            // 1. Render Headers
-            const thCheckbox = document.createElement('th'); const newSelectAllCheckbox = document.createElement('input');
-            newSelectAllCheckbox.type = 'checkbox'; newSelectAllCheckbox.id = 'selectAllCheckbox';
-            newSelectAllCheckbox.title = 'Select/Deselect all visible rows on this page';
-            newSelectAllCheckbox.addEventListener('change', toggleSelectAll);
-            thCheckbox.appendChild(newSelectAllCheckbox); tableHeader.appendChild(thCheckbox);
-            visibleColumns.forEach(header => { if (allHeaders.includes(header)) { const th = document.createElement('th'); th.textContent = header; tableHeader.appendChild(th); } });
+             const thCheckbox = document.createElement('th'); const newSelectAllCheckbox = document.createElement('input');
+             newSelectAllCheckbox.type = 'checkbox'; newSelectAllCheckbox.id = 'selectAllCheckbox';
+             newSelectAllCheckbox.title = 'Select/Deselect all visible rows on this page';
+             newSelectAllCheckbox.addEventListener('change', toggleSelectAll);
+             thCheckbox.appendChild(newSelectAllCheckbox); tableHeader.appendChild(thCheckbox);
+             visibleColumns.forEach(header => { if (allHeaders.includes(header)) { const th = document.createElement('th'); th.textContent = header; tableHeader.appendChild(th); } });
 
-            // 2. Prepare Data for Current Page
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, filteredData.length);
-            const pageData = filteredData.slice(startIndex, endIndex);
+             const startIndex = (currentPage - 1) * rowsPerPage;
+             const endIndex = Math.min(startIndex + rowsPerPage, filteredData.length);
+             const pageData = filteredData.slice(startIndex, endIndex);
 
-            // 3. Render Rows for Current Page
-            pageData.forEach(row => {
-                const tr = document.createElement('tr'); tr.dataset.id = row._id;
-                const checkboxCell = document.createElement('td'); const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox'; checkbox.className = 'row-checkbox'; checkbox.dataset.id = row._id; checkbox.checked = false; // Always start unchecked on render
-                checkboxCell.appendChild(checkbox); tr.appendChild(checkboxCell);
-                visibleColumns.forEach(header => { if (allHeaders.includes(header)) { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); } });
-                tableBody.appendChild(tr);
-            });
+             pageData.forEach(row => {
+                 const tr = document.createElement('tr'); tr.dataset.id = row._id;
+                 const checkboxCell = document.createElement('td'); const checkbox = document.createElement('input');
+                 checkbox.type = 'checkbox'; checkbox.className = 'row-checkbox'; checkbox.dataset.id = row._id; checkbox.checked = false;
+                 checkboxCell.appendChild(checkbox); tr.appendChild(checkboxCell);
+                 visibleColumns.forEach(header => { if (allHeaders.includes(header)) { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); } });
+                 tableBody.appendChild(tr);
+             });
 
-            // 4. Update "Select All" Checkbox State
-            const currentSelectAllCheckbox = document.getElementById('selectAllCheckbox');
-            if (currentSelectAllCheckbox) {
+             const currentSelectAllCheckbox = document.getElementById('selectAllCheckbox');
+             if (currentSelectAllCheckbox) {
                  currentSelectAllCheckbox.disabled = pageData.length === 0;
-                 currentSelectAllCheckbox.checked = false; // Always reset on page change/render
+                 currentSelectAllCheckbox.checked = false;
              }
 
-            // 5. Update No Data Message & Pagination Visibility
-            noDataMessage.style.display = excelData.length === 0 ? 'block' : (filteredData.length === 0 ? 'block' : 'none');
-            if (excelData.length > 0 && filteredData.length === 0) {
-                noDataMessage.textContent = "No data matches filters/search.";
-                paginationControls.style.display = 'none'; // Hide pagination if no results
-            } else if (excelData.length === 0) {
-                noDataMessage.textContent = "Upload an Excel file.";
-                paginationControls.style.display = 'none';
-            } else {
-                 noDataMessage.style.display = 'none'; // Hide message if data exists
-                paginationControls.style.display = 'flex'; // Ensure pagination is visible if there's data
-            }
+             noDataMessage.style.display = excelData.length === 0 ? 'block' : (filteredData.length === 0 ? 'block' : 'none');
+             if (excelData.length > 0 && filteredData.length === 0) {
+                 noDataMessage.textContent = "No data matches filters/search.";
+                 paginationControls.style.display = 'none';
+             } else if (excelData.length === 0) {
+                 noDataMessage.textContent = "Upload an Excel file.";
+                 paginationControls.style.display = 'none';
+             } else {
+                 noDataMessage.style.display = 'none';
+                 paginationControls.style.display = 'flex';
+             }
 
-            // 6. Update Pagination Controls Display
-            updatePaginationControls();
-            // 7. Reset "Add Selected" button state for the new page view
-            updateAddToShortlistButtonState();
+             updatePaginationControls();
+             updateAddToShortlistButtonState();
         }
 
         function updatePaginationControls() {
-            const totalRows = filteredData.length;
-            const totalPages = Math.ceil(totalRows / rowsPerPage);
-            currentPage = Math.max(1, Math.min(currentPage, totalPages || 1)); // Ensure currentPage is valid
+             const totalRows = filteredData.length;
+             const totalPages = Math.ceil(totalRows / rowsPerPage);
+             currentPage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
+             const startIndex = (currentPage - 1) * rowsPerPage;
+             const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
 
-            const startRow = totalRows === 0 ? 0 : startIndex + 1;
-            const endRow = endIndex;
+             const startRow = totalRows === 0 ? 0 : startIndex + 1;
+             const endRow = endIndex;
 
-            paginationInfo.textContent = `Showing ${startRow}-${endRow} of ${totalRows}`;
-
-            prevPageBtn.disabled = currentPage <= 1;
-            nextPageBtn.disabled = currentPage >= totalPages;
-
-            // Ensure select matches current rowsPerPage
-            rowsPerPageSelect.value = String(rowsPerPage);
+             paginationInfo.textContent = `Showing ${startRow}-${endRow} of ${totalRows}`;
+             prevPageBtn.disabled = currentPage <= 1;
+             nextPageBtn.disabled = currentPage >= totalPages;
+             rowsPerPageSelect.value = String(rowsPerPage);
         }
 
         function handleRowsPerPageChange() {
             rowsPerPage = parseInt(rowsPerPageSelect.value, 10);
-            currentPage = 1; // Go back to first page
+            currentPage = 1;
             renderTable();
         }
 
@@ -687,46 +678,45 @@
             const totalRows = filteredData.length;
             const totalPages = Math.ceil(totalRows / rowsPerPage);
             currentPage += direction;
-            // Clamp currentPage between 1 and totalPages
             currentPage = Math.max(1, Math.min(currentPage, totalPages));
             renderTable();
         }
 
-        function renderShortlistedTable() { // (No pagination needed here, but includes theme update for table)
-            shortlistedGroupsContainer.innerHTML = ''; noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none'; if (shortlistedData.length === 0) return;
-            const groupedData = shortlistedData.reduce((acc, row) => { const fileKey = row._sourceFile || 'Unknown'; if (!acc[fileKey]) acc[fileKey] = []; acc[fileKey].push(row); return acc; }, {});
-            Object.entries(groupedData).forEach(([filename, rows]) => {
-                const groupWrapper = document.createElement('div'); groupWrapper.className = 'shortlist-group';
-                const details = document.createElement('details'); details.open = true;
-                const summary = document.createElement('summary'); const summaryText = document.createElement('span');
-                summaryText.textContent = `${filename} (${rows.length} shortlisted)`; summaryText.className = 'mr-auto';
-                const groupDeleteBtn = document.createElement('button'); groupDeleteBtn.className = 'group-delete-btn';
-                groupDeleteBtn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Del Group'; groupDeleteBtn.title = `Remove all from ${filename}`; groupDeleteBtn.dataset.filename = filename;
-                summary.append(summaryText, groupDeleteBtn);
-                const groupContent = document.createElement('div'); groupContent.className = 'group-content';
-                const tableContainer = document.createElement('div'); tableContainer.className = `table-container ${theme}`; // Apply theme dynamically
-                const table = document.createElement('table'); const thead = document.createElement('thead'); const tbody = document.createElement('tbody');
-                table.append(thead, tbody); tableContainer.appendChild(table); groupContent.appendChild(tableContainer);
-                const headerRow = document.createElement('tr');
-                visibleColumns.forEach(header => { const th = document.createElement('th'); th.textContent = header; headerRow.appendChild(th); });
-                headerRow.innerHTML += `<th>Feedback</th><th>Contacted</th><th class="text-center">Action</th>`; thead.appendChild(headerRow);
-                rows.forEach(row => {
-                    const tr = document.createElement('tr'); tr.dataset.id = row._id;
-                    visibleColumns.forEach(header => { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); });
-                    const feedbackTd = document.createElement('td'); const feedbackBtn = document.createElement('button');
-                    feedbackBtn.innerHTML = '<i class="fas fa-comment-dots"></i>'; feedbackBtn.className = 'p-1 rounded text-white text-xs';
-                    const hasFeedback = feedbackData[row._id]?.feedback; feedbackBtn.classList.toggle('bg-blue-500', !!hasFeedback); feedbackBtn.classList.toggle('bg-gray-500', !hasFeedback);
-                    feedbackBtn.title = hasFeedback ? `View/Edit: ${feedbackData[row._id].feedback.substring(0,50)}...` : 'Add Feedback';
-                    feedbackBtn.addEventListener('click', () => showFeedbackForm(row._id)); feedbackTd.appendChild(feedbackBtn); tr.appendChild(feedbackTd);
-                    const contactedTd = document.createElement('td'); const contactedIcon = document.createElement('i');
-                    const isContacted = feedbackData[row._id]?.contacted; contactedIcon.className = `fas fa-circle text-xs ${isContacted ? 'text-green-500' : 'text-red-500'}`;
-                    contactedIcon.title = isContacted ? 'Contacted' : 'Not Contacted'; contactedTd.appendChild(contactedIcon); tr.appendChild(contactedTd);
-                    const deleteTd = document.createElement('td'); deleteTd.className = 'text-center'; const rowDeleteBtn = document.createElement('button');
-                    rowDeleteBtn.className = 'row-delete-btn'; rowDeleteBtn.innerHTML = '<i class="fas fa-times"></i>'; rowDeleteBtn.title = 'Remove item';
-                    rowDeleteBtn.dataset.id = row._id; deleteTd.appendChild(rowDeleteBtn); tr.appendChild(deleteTd); tbody.appendChild(tr);
-                });
-                details.append(summary, groupContent); groupWrapper.appendChild(details); shortlistedGroupsContainer.appendChild(groupWrapper);
-            });
+        function renderShortlistedTable() {
+             shortlistedGroupsContainer.innerHTML = ''; noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none'; if (shortlistedData.length === 0) return;
+             const groupedData = shortlistedData.reduce((acc, row) => { const fileKey = row._sourceFile || 'Unknown'; if (!acc[fileKey]) acc[fileKey] = []; acc[fileKey].push(row); return acc; }, {});
+             Object.entries(groupedData).forEach(([filename, rows]) => {
+                 const groupWrapper = document.createElement('div'); groupWrapper.className = 'shortlist-group';
+                 const details = document.createElement('details'); details.open = true;
+                 const summary = document.createElement('summary'); const summaryText = document.createElement('span');
+                 summaryText.textContent = `${filename} (${rows.length} shortlisted)`; summaryText.className = 'mr-auto';
+                 const groupDeleteBtn = document.createElement('button'); groupDeleteBtn.className = 'group-delete-btn';
+                 groupDeleteBtn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Del Group'; groupDeleteBtn.title = `Remove all from ${filename}`; groupDeleteBtn.dataset.filename = filename;
+                 summary.append(summaryText, groupDeleteBtn);
+                 const groupContent = document.createElement('div'); groupContent.className = 'group-content';
+                 const tableContainer = document.createElement('div'); tableContainer.className = `table-container ${theme}`;
+                 const table = document.createElement('table'); const thead = document.createElement('thead'); const tbody = document.createElement('tbody');
+                 table.append(thead, tbody); tableContainer.appendChild(table); groupContent.appendChild(tableContainer);
+                 const headerRow = document.createElement('tr');
+                 visibleColumns.forEach(header => { const th = document.createElement('th'); th.textContent = header; headerRow.appendChild(th); });
+                 headerRow.innerHTML += `<th>Feedback</th><th>Contacted</th><th class="text-center">Action</th>`; thead.appendChild(headerRow);
+                 rows.forEach(row => {
+                     const tr = document.createElement('tr'); tr.dataset.id = row._id;
+                     visibleColumns.forEach(header => { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); });
+                     const feedbackTd = document.createElement('td'); const feedbackBtn = document.createElement('button');
+                     feedbackBtn.innerHTML = '<i class="fas fa-comment-dots"></i>'; feedbackBtn.className = 'p-1 rounded text-white text-xs';
+                     const hasFeedback = feedbackData[row._id]?.feedback; feedbackBtn.classList.toggle('bg-blue-500', !!hasFeedback); feedbackBtn.classList.toggle('bg-gray-500', !hasFeedback);
+                     feedbackBtn.title = hasFeedback ? `View/Edit: ${feedbackData[row._id].feedback.substring(0,50)}...` : 'Add Feedback';
+                     feedbackBtn.addEventListener('click', () => showFeedbackForm(row._id)); feedbackTd.appendChild(feedbackBtn); tr.appendChild(feedbackTd);
+                     const contactedTd = document.createElement('td'); const contactedIcon = document.createElement('i');
+                     const isContacted = feedbackData[row._id]?.contacted; contactedIcon.className = `fas fa-circle text-xs ${isContacted ? 'text-green-500' : 'text-red-500'}`;
+                     contactedIcon.title = isContacted ? 'Contacted' : 'Not Contacted'; contactedTd.appendChild(contactedIcon); tr.appendChild(contactedTd);
+                     const deleteTd = document.createElement('td'); deleteTd.className = 'text-center'; const rowDeleteBtn = document.createElement('button');
+                     rowDeleteBtn.className = 'row-delete-btn'; rowDeleteBtn.innerHTML = '<i class="fas fa-times"></i>'; rowDeleteBtn.title = 'Remove item';
+                     rowDeleteBtn.dataset.id = row._id; deleteTd.appendChild(rowDeleteBtn); tr.appendChild(deleteTd); tbody.appendChild(tr);
+                 });
+                 details.append(summary, groupContent); groupWrapper.appendChild(details); shortlistedGroupsContainer.appendChild(groupWrapper);
+             });
         }
 
         function updateShortlistedTab() {
@@ -737,80 +727,104 @@
              noShortlistedMessage.style.display = count === 0 ? 'block' : 'none';
          }
 
-        function createFilterOptions() {
-             // Clear only dynamic filters, keep the static skills filter input
-             filterContainer.querySelectorAll('.filter-item:not(:first-child)').forEach(el => el.remove());
 
+        // --- Custom MultiSelect Logic ---
+
+        function createFilterOptions() {
+             filterContainer.querySelectorAll('.filter-item:not(:first-child)').forEach(el => el.remove());
              const currentFileHeaders = excelData.length > 0 ? Object.keys(excelData[0]).filter(h => h !== '_id' && h !== '_sourceFile') : allHeaders;
 
              visibleColumns.forEach(header => {
-                 // Skip if it's a column already handled by the freeform skills filter
                  if (skillColumnNames.includes(header)) return;
+                 if (!currentFileHeaders.includes(header)) return;
 
-                 if (!currentFileHeaders.includes(header)) return; // Skip if header not in current data
-
-                 // Generate multi-select dropdowns for columns with a reasonable number of unique values
                  const uniqueValues = [...new Set(excelData.map(row => row[header]))]
-                    .map(val => String(val ?? '').trim())
-                    .filter(v => v !== '')
+                    .map(val => String(val ?? '').trim()).filter(v => v !== '')
                     .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
 
-                 if (uniqueValues.length > 0 && uniqueValues.length < 150) { // Limit dropdown generation
-                     const item = document.createElement('div'); item.className = 'filter-item';
+                 if (uniqueValues.length > 0 && uniqueValues.length < 150) {
+                     const filterItem = document.createElement('div'); filterItem.className = 'filter-item';
                      const label = document.createElement('label');
-                     const id = `filter-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
-                     label.htmlFor = id; label.className = 'block mb-1 text-sm font-medium'; label.textContent = header;
-                     const select = document.createElement('select');
-                     select.id = id;
-                     select.className = 'input-field text-sm'; // Basic input styling
-                     select.multiple = true; // Enable multi-select
-                     select.title = "Hold Ctrl (or Cmd on Mac) to select multiple options"; // Guide user
-                     select.dataset.column = header;
-                     // Add placeholder/instruction? Not standard for multi-select, rely on label/title.
-                     uniqueValues.forEach(v => {
-                         const opt = document.createElement('option');
-                         opt.value = v; opt.textContent = v;
-                         select.appendChild(opt);
+                     const idBase = `filter-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
+                     label.htmlFor = `${idBase}-display`; label.className = 'block mb-1 text-sm font-medium'; label.textContent = header;
+                     const container = document.createElement('div'); container.className = 'custom-multiselect-container'; container.dataset.column = header;
+                     const display = document.createElement('div'); display.id = `${idBase}-display`; display.className = 'custom-multiselect-display'; display.innerHTML = `<span class="display-text placeholder">Select ${header}...</span><i class="arrow fas fa-chevron-down"></i>`;
+                     const dropdown = document.createElement('div'); dropdown.className = 'custom-multiselect-dropdown hide-scroll';
+                     const selectAllId = `${idBase}-select-all`; const selectAllOption = document.createElement('div'); selectAllOption.className = 'custom-multiselect-option select-all-option';
+                     selectAllOption.innerHTML = `<input type="checkbox" id="${selectAllId}" class="select-all-checkbox"><label for="${selectAllId}">Select All</label>`; dropdown.appendChild(selectAllOption);
+                     uniqueValues.forEach((value, index) => {
+                         const optionId = `${idBase}-option-${index}`; const option = document.createElement('div'); option.className = 'custom-multiselect-option';
+                         option.innerHTML = `<input type="checkbox" id="${optionId}" class="option-checkbox" value="${value}"><label for="${optionId}">${value}</label>`; dropdown.appendChild(option);
                      });
-                     item.append(label, select); filterContainer.appendChild(item);
+                     container.appendChild(display); container.appendChild(dropdown); filterItem.appendChild(label); filterItem.appendChild(container); filterContainer.appendChild(filterItem);
                  }
              });
         }
 
+        function handleFilterContainerClick(event) {
+             const target = event.target;
+             const displayArea = target.closest('.custom-multiselect-display');
+             if (displayArea) {
+                 const container = displayArea.closest('.custom-multiselect-container');
+                 if (container) {
+                     document.querySelectorAll('.custom-multiselect-container.open').forEach(openContainer => { if (openContainer !== container) openContainer.classList.remove('open'); });
+                     container.classList.toggle('open');
+                 }
+                 return;
+             }
+
+             if (target.type === 'checkbox' && target.closest('.custom-multiselect-dropdown')) {
+                 const container = target.closest('.custom-multiselect-container'); if (!container) return;
+                 const dropdown = container.querySelector('.custom-multiselect-dropdown'); const allOptionCheckboxes = dropdown.querySelectorAll('.option-checkbox'); const selectAllCheckbox = dropdown.querySelector('.select-all-checkbox');
+                 if (target.classList.contains('select-all-checkbox')) { const isChecked = target.checked; allOptionCheckboxes.forEach(cb => cb.checked = isChecked); }
+                 else if (target.classList.contains('option-checkbox')) { const allChecked = Array.from(allOptionCheckboxes).every(cb => cb.checked); const noneChecked = Array.from(allOptionCheckboxes).every(cb => !cb.checked); selectAllCheckbox.checked = allChecked; selectAllCheckbox.indeterminate = !allChecked && !noneChecked; }
+                 updateMultiSelectDisplay(container);
+             }
+             if (target.closest('.custom-multiselect-dropdown')) event.stopPropagation();
+        }
+
+        function handleDocumentClick(event) {
+            if (!event.target.closest('.custom-multiselect-container')) {
+                document.querySelectorAll('.custom-multiselect-container.open').forEach(container => container.classList.remove('open'));
+            }
+        }
+
+        function updateMultiSelectDisplay(container) {
+            const displaySpan = container.querySelector('.custom-multiselect-display .display-text');
+            const dropdown = container.querySelector('.custom-multiselect-dropdown');
+            const checkedOptions = dropdown.querySelectorAll('.option-checkbox:checked');
+            const placeholder = `Select ${container.dataset.column}...`;
+
+            if (checkedOptions.length === 0) { displaySpan.textContent = placeholder; displaySpan.classList.add('placeholder'); }
+            else if (checkedOptions.length === 1) { displaySpan.textContent = checkedOptions[0].value; displaySpan.classList.remove('placeholder'); }
+            else { displaySpan.textContent = `${checkedOptions.length} Selected`; displaySpan.classList.remove('placeholder'); }
+        }
+
+        // --- End Custom MultiSelect Logic ---
+
+
         function applyFilters() {
              let currentFiltered = [...excelData];
 
-             // 1. Apply Freeform Skills Filter (across identified skill columns)
              const skillsValue = skillsetFilterInput.value.trim().toLowerCase();
              if (skillsValue && skillColumnNames.length > 0) {
                  const skillsToSearch = skillsValue.split(',').map(s => s.trim()).filter(Boolean);
                  if (skillsToSearch.length > 0) {
-                     currentFiltered = currentFiltered.filter(row => {
-                         // Check if *any* skill column contains *any* of the searched skills
-                         return skillColumnNames.some(skillCol => {
-                             const cellValue = String(row[skillCol] || '').toLowerCase();
-                             return skillsToSearch.some(searchTerm => cellValue.includes(searchTerm));
-                         });
-                     });
+                     currentFiltered = currentFiltered.filter(row =>
+                         skillColumnNames.some(skillCol => String(row[skillCol] || '').toLowerCase().includes(skillsToSearch.some(searchTerm => String(row[skillCol] || '').toLowerCase().includes(searchTerm))))
+                     );
                  }
              }
 
-             // 2. Apply Multi-Select Dropdown Filters
-             filterContainer.querySelectorAll('select[multiple]').forEach(selectElement => {
-                 const column = selectElement.dataset.column;
-                 const selectedOptions = Array.from(selectElement.selectedOptions);
-                 const selectedValues = selectedOptions.map(opt => opt.value);
-
+             filterContainer.querySelectorAll('.custom-multiselect-container').forEach(container => {
+                 const column = container.dataset.column;
+                 const checkedOptions = container.querySelectorAll('.option-checkbox:checked');
+                 const selectedValues = Array.from(checkedOptions).map(cb => cb.value);
                  if (selectedValues.length > 0 && column && visibleColumns.includes(column)) {
-                     currentFiltered = currentFiltered.filter(row => {
-                         const rowValue = String(row[column] || '');
-                         // Check if the row's value is one of the selected values for this filter
-                         return selectedValues.includes(rowValue);
-                     });
+                     currentFiltered = currentFiltered.filter(row => selectedValues.includes(String(row[column] || '')));
                  }
              });
 
-             // 3. Apply Global Search Filter (across visible columns)
              const search = searchInput.value.toLowerCase().trim();
              if (search !== '') {
                  currentFiltered = currentFiltered.filter(r =>
@@ -819,24 +833,21 @@
              }
 
              filteredData = currentFiltered;
-             currentPage = 1; // Reset to first page after filtering
+             currentPage = 1;
              renderTable();
-             closeMenu(); // Close sidenav after applying
+             closeMenu();
         }
 
         function resetFilters() {
-            // Reset freeform skills input
-            skillsetFilterInput.value = '';
-            // Reset multi-select dropdowns
-            filterContainer.querySelectorAll('select[multiple]').forEach(select => {
-                 Array.from(select.options).forEach(option => {
-                     option.selected = false;
-                 });
+             skillsetFilterInput.value = '';
+             filterContainer.querySelectorAll('.custom-multiselect-container').forEach(container => {
+                 container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                 const selectAllCheckbox = container.querySelector('.select-all-checkbox');
+                 if (selectAllCheckbox) selectAllCheckbox.indeterminate = false;
+                 updateMultiSelectDisplay(container);
              });
-            // Reset search input
-            searchInput.value = '';
-            // Apply (which resets data to original, resets page, and renders)
-            applyFilters();
+             searchInput.value = '';
+             applyFilters();
         }
 
 
@@ -855,247 +866,80 @@
 
         function toggleColumn(header) {
              const idx = visibleColumns.indexOf(header);
-             if (idx > -1) { // Remove column
-                 visibleColumns.splice(idx, 1);
-             } else { // Add column - attempt to insert logically or just append
-                 const newVis = [];
-                 let added = false;
-                 allHeaders.forEach(h => {
-                     if (visibleColumns.includes(h)) newVis.push(h);
-                     else if (h === header) { newVis.push(h); added = true; }
-                 });
-                 if (!added) newVis.push(header); // Fallback
-                 visibleColumns = newVis;
-             }
-             currentPage = 1; // Reset page as columns change
+             if (idx > -1) { visibleColumns.splice(idx, 1); }
+             else { const newVis = []; let added = false; allHeaders.forEach(h => { if (visibleColumns.includes(h)) newVis.push(h); else if (h === header) { newVis.push(h); added = true; } }); if (!added) newVis.push(header); visibleColumns = newVis; }
+             currentPage = 1;
              renderTable();
-             updateShortlistedTab(); // Re-render shortlist table if active
-             // Re-generate filter options based on NEW visible columns (might remove filters for hidden cols)
-             // Note: This might clear existing selections in the filters that remain. Consider preserving state if needed.
-             createFilterOptions();
+             updateShortlistedTab();
+             createFilterOptions(); // Regenerate filters based on visibility
          }
 
-        // Handles checkbox changes in the table body
-        function handleTableBodyChange(event) {
-            if (event.target.classList.contains('row-checkbox')) {
-                toggleRowSelectionVisual(event.target);
-            }
-        }
-
-        // Updates visual style of selected row and the count button
-        function toggleRowSelectionVisual(checkbox) {
-             const tr = checkbox.closest('tr');
-             if (tr) tr.classList.toggle('selected', checkbox.checked);
-             updateAddToShortlistButtonState();
-         }
-
-        // Selects/deselects all checkboxes *on the current page*
-        function toggleSelectAll() {
-            const isChecked = document.getElementById('selectAllCheckbox').checked;
-            tableBody.querySelectorAll('.row-checkbox').forEach(cb => {
-                if(cb.checked !== isChecked) { // Avoid redundant changes/event triggers
-                    cb.checked = isChecked;
-                    const tr = cb.closest('tr');
-                    if (tr) tr.classList.toggle('selected', isChecked);
-                }
-            });
-            updateAddToShortlistButtonState(); // Update count based on current page selection
-        }
-
-        // Updates the "Add Selected (X)" button based on checkboxes checked *on the current page*
-        function updateAddToShortlistButtonState() {
-            const count = tableBody.querySelectorAll('.row-checkbox:checked').length; // Count only visible checkboxes
-            selectedRowCount.textContent = count;
-            addToShortlistBtn.disabled = count === 0;
-        }
-
-        // Adds selected rows *from the current page* to the shortlist
+        function handleTableBodyChange(event) { if (event.target.classList.contains('row-checkbox')) toggleRowSelectionVisual(event.target); }
+        function toggleRowSelectionVisual(checkbox) { const tr = checkbox.closest('tr'); if (tr) tr.classList.toggle('selected', checkbox.checked); updateAddToShortlistButtonState(); }
+        function toggleSelectAll() { const isChecked = document.getElementById('selectAllCheckbox').checked; tableBody.querySelectorAll('.row-checkbox').forEach(cb => { if(cb.checked !== isChecked) { cb.checked = isChecked; const tr = cb.closest('tr'); if (tr) tr.classList.toggle('selected', isChecked); } }); updateAddToShortlistButtonState(); }
+        function updateAddToShortlistButtonState() { const count = tableBody.querySelectorAll('.row-checkbox:checked').length; selectedRowCount.textContent = count; addToShortlistBtn.disabled = count === 0; }
         function addSelectedToShortlist() {
-             const checkboxes = tableBody.querySelectorAll('.row-checkbox:checked'); // Get only visible checked boxes
-             if (checkboxes.length === 0) return;
-             let added = 0, present = 0;
-             checkboxes.forEach(cb => {
-                 const id = cb.dataset.id;
-                 const row = excelData.find(r => r._id === id); // Find the original row data
-                 if (row) {
-                     if (!shortlistedData.some(sr => sr._id === id)) {
-                         shortlistedData.push(row);
-                         added++;
-                     } else {
-                         present++;
-                     }
-                 }
-                 cb.checked = false; // Uncheck the box
-                 const tr = cb.closest('tr'); if (tr) tr.classList.remove('selected'); // Remove visual selection
-             });
-
-             // Uncheck "Select All" if it was checked
+             const checkboxes = tableBody.querySelectorAll('.row-checkbox:checked'); if (checkboxes.length === 0) return; let added = 0, present = 0;
+             checkboxes.forEach(cb => { const id = cb.dataset.id; const row = excelData.find(r => r._id === id); if (row) { if (!shortlistedData.some(sr => sr._id === id)) { shortlistedData.push(row); added++; } else present++; } cb.checked = false; const tr = cb.closest('tr'); if (tr) tr.classList.remove('selected'); });
              const selectAll = document.getElementById('selectAllCheckbox'); if (selectAll) selectAll.checked = false;
-
-             updateAddToShortlistButtonState(); // Reset count for the current page (will be 0)
-             updateShortlistedTab(); // Update the count on the shortlist tab
-
+             updateAddToShortlistButtonState(); updateShortlistedTab();
              let msg = `${added} item(s) added from current page.`; if (present > 0) msg += ` ${present} already present.`;
              addShortlistStatus.textContent = msg; setTimeout(() => { addShortlistStatus.textContent = ''; }, 4000);
          }
 
-        // Handles search input
-        function handleSearch() {
-             applyFilters(); // Re-apply all filters including the search term
-        }
+        function handleSearch() { applyFilters(); }
 
         function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(c => c.classList.remove('active'));
-            if (tab === 'all') {
-                allDataTab.classList.add('active'); allDataContent.classList.add('active');
-                // Ensure table is rendered if switching back
-                if (excelData.length > 0) renderTable(); else updatePaginationControls(); // Update pagination even if no data
-            } else {
-                shortlistedTab.classList.add('active'); shortlistedContent.classList.add('active');
-                renderShortlistedTable(); // Render shortlist when tab is active
-            }
-            hideFeedbackForm(); // Hide feedback form when switching tabs
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab').forEach(c => c.classList.remove('active'));
+            if (tab === 'all') { allDataTab.classList.add('active'); allDataContent.classList.add('active'); if (excelData.length > 0) renderTable(); else updatePaginationControls(); }
+            else { shortlistedTab.classList.add('active'); shortlistedContent.classList.add('active'); renderShortlistedTable(); }
+            hideFeedbackForm();
         }
 
         function exportToExcel() {
-             if (shortlistedData.length === 0) { alert("No data to export."); return; }
-             try {
-                 const headers = [...visibleColumns, 'Feedback', 'Contacted', 'Source File'];
-                 const wsData = [headers];
-                 shortlistedData.forEach(r => {
-                     const rd = [];
-                     visibleColumns.forEach(h => rd.push(r[h] ?? ''));
-                     rd.push(feedbackData[r._id]?.feedback || '');
-                     rd.push(feedbackData[r._id]?.contacted ? 'Yes' : 'No');
-                     rd.push(r._sourceFile || 'Unknown');
-                     wsData.push(rd);
-                 });
-                 const ws = XLSX.utils.aoa_to_sheet(wsData);
-                 ws['!cols'] = headers.map(h => ({ wch: h === 'Feedback' ? 40 : (h === 'Source File' ? 25 : 15) })); // Basic column widths
-                 const wb = XLSX.utils.book_new();
-                 XLSX.utils.book_append_sheet(wb, ws, "Shortlisted");
-                 const d = new Date();
-                 const fn = `Shortlisted_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.xlsx`;
-                 XLSX.writeFile(wb, fn);
-             } catch (e) { console.error("Export Error:", e); alert("Error exporting data."); }
+             if (shortlistedData.length === 0) { alert("No data to export."); return; } try { const headers = [...visibleColumns, 'Feedback', 'Contacted', 'Source File']; const wsData = [headers];
+             shortlistedData.forEach(r => { const rd = []; visibleColumns.forEach(h => rd.push(r[h] ?? '')); rd.push(feedbackData[r._id]?.feedback || ''); rd.push(feedbackData[r._id]?.contacted ? 'Yes' : 'No'); rd.push(r._sourceFile || 'Unknown'); wsData.push(rd); });
+             const ws = XLSX.utils.aoa_to_sheet(wsData); ws['!cols'] = headers.map(h => ({ wch: h === 'Feedback' ? 40 : (h === 'Source File' ? 25 : 15) })); const wb = XLSX.utils.book_new();
+             XLSX.utils.book_append_sheet(wb, ws, "Shortlisted"); const d = new Date(); const fn = `Shortlisted_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.xlsx`;
+             XLSX.writeFile(wb, fn); } catch (e) { console.error("Export Error:", e); alert("Error exporting data."); }
          }
 
         async function askAi() {
-            const q = aiQuestion.value.trim(); if (!q) return;
-            if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500">AI Assistant requires a valid Gemini API Key.</p>';
-                return;
-            }
-            aiResponseContainer.innerHTML = '<p>🤖 Thinking...</p>'; askAiBtn.disabled = true; aiQuestion.disabled = true;
-
-            // Use currently filtered data for context
-            const ctxData = filteredData;
-            const ctxHeaders = visibleColumns.filter(h => allHeaders.includes(h));
-
-            if (ctxData.length === 0) {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500">No data in "All Data" tab to analyze.</p>';
-                askAiBtn.disabled = false; aiQuestion.disabled = false; return;
-            }
-            if (ctxHeaders.length === 0) {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500">No columns are visible to analyze.</p>';
-                askAiBtn.disabled = false; aiQuestion.disabled = false; return;
-            }
-
-            try {
-                 const sampleSize = Math.min(ctxData.length, 50); // Limit sample size
-                 let csvSample = ctxHeaders.join(",") + "\n";
-                 for (let i = 0; i < sampleSize; i++) {
-                     csvSample += ctxHeaders.map(h => `"${String(ctxData[i][h] ?? '').replace(/"/g, '""')}"`).join(",") + "\n";
-                 }
-
+             const q = aiQuestion.value.trim(); if (!q) return; if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") { aiResponseContainer.innerHTML = '<p class="text-yellow-500">AI Assistant requires a valid Gemini API Key.</p>'; return; }
+             aiResponseContainer.innerHTML = '<p>🤖 Thinking...</p>'; askAiBtn.disabled = true; aiQuestion.disabled = true;
+             const ctxData = filteredData; const ctxHeaders = visibleColumns.filter(h => allHeaders.includes(h));
+             if (ctxData.length === 0) { aiResponseContainer.innerHTML = '<p class="text-yellow-500">No data in "All Data" tab to analyze.</p>'; askAiBtn.disabled = false; aiQuestion.disabled = false; return; }
+             if (ctxHeaders.length === 0) { aiResponseContainer.innerHTML = '<p class="text-yellow-500">No columns are visible to analyze.</p>'; askAiBtn.disabled = false; aiQuestion.disabled = false; return; }
+             try {
+                 const sampleSize = Math.min(ctxData.length, 50); let csvSample = ctxHeaders.join(",") + "\n";
+                 for (let i = 0; i < sampleSize; i++) csvSample += ctxHeaders.map(h => `"${String(ctxData[i][h] ?? '').replace(/"/g, '""')}"`).join(",") + "\n";
                  const prompt = `Analyze data from "${currentFileName || 'unknown'}". Columns: ${ctxHeaders.join(", ")}. Total matching rows: ${ctxData.length}. Sample (up to ${sampleSize} rows):\n\`\`\`csv\n${csvSample}\`\`\`\nContext: Data may be filtered by user selections.\nQ: ${q}\nAnswer concisely based ONLY on the sample provided. State if insufficient. Use simple markdown.`;
-
                  const responseText = await fetchGeminiResponse(prompt);
-                 aiResponseContainer.innerHTML = `<div class="markdown">${formatAiResponse(responseText)}</div>`;
-                 aiQuestion.value = '';
-            } catch (e) {
-                 console.error("AI Error:", e);
-                 aiResponseContainer.innerHTML = `<p class="text-red-500">AI Error: ${e.message}. Check console.</p>`;
-            } finally {
-                 askAiBtn.disabled = false; aiQuestion.disabled = false;
-            }
+                 aiResponseContainer.innerHTML = `<div class="markdown">${formatAiResponse(responseText)}</div>`; aiQuestion.value = '';
+             } catch (e) { console.error("AI Error:", e); aiResponseContainer.innerHTML = `<p class="text-red-500">AI Error: ${e.message}. Check console.</p>`; } finally { askAiBtn.disabled = false; aiQuestion.disabled = false; }
          }
 
-        async function fetchGeminiResponse(prompt) { // Using v1beta model endpoint
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-            const requestBody = { contents: [{ parts: [{ text: prompt }] }] };
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(requestBody)
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error("Gemini API Error Response:", errorData);
-                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-                }
-                const data = await response.json();
-                if (data.promptFeedback?.blockReason) throw new Error(`Request blocked: ${data.promptFeedback.blockReason}`);
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!text) {
-                     if (data.candidates?.[0]?.finishReason && data.candidates?.[0]?.finishReason !== 'STOP') throw new Error(`Incomplete: ${data.candidates[0].finishReason}`);
-                     throw new Error('Empty AI response.');
-                 }
-                return text;
-            } catch (error) {
-                console.error("Fetch Gemini Error:", error);
-                throw error; // Re-throw to be caught by askAi
-            }
-        }
+        async function fetchGeminiResponse(prompt) {
+             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+             const requestBody = { contents: [{ parts: [{ text: prompt }] }] }; try { const response = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(requestBody) }); if (!response.ok) { const errorData = await response.json(); console.error("Gemini API Error Response:", errorData); throw new Error(errorData.error?.message || `API request failed with status ${response.status}`); } const data = await response.json(); if (data.promptFeedback?.blockReason) throw new Error(`Request blocked: ${data.promptFeedback.blockReason}`); const text = data.candidates?.[0]?.content?.parts?.[0]?.text; if (!text) { if (data.candidates?.[0]?.finishReason && data.candidates?.[0]?.finishReason !== 'STOP') throw new Error(`Incomplete: ${data.candidates[0].finishReason}`); throw new Error('Empty AI response.'); } return text; } catch (error) { console.error("Fetch Gemini Error:", error); throw error; }
+         }
 
-        // Basic markdown formatting
-        function formatAiResponse(text) {
-            return text
-                .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>') // Bold
-                .replace(/\*(.*?)\*/g,'<em>$1</em>')       // Italics (careful not to overmatch)
-                .replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>') // Code blocks
-                .replace(/`(.*?)`/g,'<code>$1</code>')             // Inline code
-                .replace(/^\s*[-*+]\s+(.*)$/gm,'<li>$1</li>')        // List items
-                .replace(/(\n?\s*<li>.*?<\/li>\s*)+/gs, (match) => `<ul>${match.trim()}</ul>`) // Wrap lists in <ul>
-                .replace(/\n/g,'<br>');                             // Newlines to <br>
-        }
-
+        function formatAiResponse(text) { return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/^\s*[-*+]\s+(.*)$/gm,'<li>$1</li>').replace(/(\n?\s*<li>.*?<\/li>\s*)+/gs, (match) => `<ul>${match.trim()}</ul>`).replace(/\n/g,'<br>'); }
 
         function showFeedbackForm(id) { feedbackRowId.value = id; const d = feedbackData[id] || {}; feedbackText.value = d.feedback || ''; contactedCheckbox.checked = d.contacted || false; feedbackForm.classList.remove('hidden'); feedbackText.focus(); }
         function hideFeedbackForm() { feedbackForm.classList.add('hidden'); feedbackRowId.value = ''; feedbackText.value = ''; contactedCheckbox.checked = false; }
-        function saveFeedback() { const id = feedbackRowId.value; if (!id) return; feedbackData[id] = { feedback: feedbackText.value.trim(), contacted: contactedCheckbox.checked }; if (shortlistedContent.classList.contains('active')) { renderShortlistedTable(); /* Simpler to just re-render the shortlist table */ } hideFeedbackForm(); }
-
+        function saveFeedback() { const id = feedbackRowId.value; if (!id) return; feedbackData[id] = { feedback: feedbackText.value.trim(), contacted: contactedCheckbox.checked }; if (shortlistedContent.classList.contains('active')) { renderShortlistedTable(); } hideFeedbackForm(); }
         function handleShortlistDeleteClick(event) { const t = event.target; const rb = t.closest('.row-delete-btn'); const gb = t.closest('.group-delete-btn'); if (rb) { const id = rb.dataset.id; if (id) deleteShortlistedRow(id); } else if (gb) { const fn = gb.dataset.filename; if (fn && confirm(`Remove ALL shortlisted items from file "${fn}"?`)) deleteShortlistedGroup(fn); } }
         function deleteShortlistedRow(id) { const initialLength = shortlistedData.length; shortlistedData = shortlistedData.filter(r => r._id !== id); if(shortlistedData.length < initialLength) { delete feedbackData[id]; updateShortlistedTab(); } }
         function deleteShortlistedGroup(filename) { const itemsToRemove = shortlistedData.filter(r => (r._sourceFile || 'Unknown') === filename); if (itemsToRemove.length === 0) return; const idsToRemove = itemsToRemove.map(r => r._id); shortlistedData = shortlistedData.filter(r => (r._sourceFile || 'Unknown') !== filename); idsToRemove.forEach(id => delete feedbackData[id]); updateShortlistedTab(); }
         function clearAllShortlisted() { if (shortlistedData.length === 0) return; if (confirm("Are you sure you want to clear the ENTIRE shortlist? This cannot be undone.")) { shortlistedData = []; feedbackData = {}; updateShortlistedTab(); } }
 
         function initializeApp() {
-             // Set initial theme
-             theme = 'light';
-             document.body.className = 'light'; // Start with light theme
-             themeToggleBtn.innerHTML = `<i class="fas fa-moon"></i>`;
-             filterSidenav.className = 'sidenav glass hide-scroll light'; // Set initial theme for sidenav
-             feedbackForm.className = 'feedback-form glass hidden fixed bottom-4 right-4 w-80 z-40 shadow-lg border light'; // Set initial theme for feedback
-
-             // Set initial state
-             rowsPerPage = parseInt(rowsPerPageSelect.value, 10);
-             currentPage = 1;
-             resetCurrentFileState(); // Includes setting up filter container base
-             updateShortlistedTab();
-             manageColumnsSection.classList.remove('expanded');
+             theme = 'light'; document.body.className = 'light'; themeToggleBtn.innerHTML = `<i class="fas fa-moon"></i>`; filterSidenav.className = 'sidenav glass hide-scroll light'; feedbackForm.className = 'feedback-form glass hidden fixed bottom-4 right-4 w-80 z-40 shadow-lg border light';
+             rowsPerPage = parseInt(rowsPerPageSelect.value, 10); currentPage = 1; resetCurrentFileState(); updateShortlistedTab(); manageColumnsSection.classList.remove('expanded');
              const chevron = manageColumnsToggle.querySelector('i'); if (chevron) { chevron.className = 'fas fa-chevron-down'; }
-             hideFeedbackForm();
-             switchTab('all');
-             paginationControls.style.display = 'none'; // Hide pagination initially
-
-             // Check AI Key
-             if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-                 aiResponseContainer.innerHTML = '<p class="text-yellow-500 text-sm">AI needs API Key.</p>';
-                 askAiBtn.disabled = true; aiQuestion.disabled = true;
-             }
+             hideFeedbackForm(); switchTab('all'); paginationControls.style.display = 'none';
+             if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") { aiResponseContainer.innerHTML = '<p class="text-yellow-500 text-sm">AI needs API Key.</p>'; askAiBtn.disabled = true; aiQuestion.disabled = true; }
              updateAddToShortlistButtonState();
          }
          // Initialize the application on load
