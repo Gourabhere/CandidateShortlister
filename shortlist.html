@@ -803,39 +803,63 @@
         // --- End Custom MultiSelect Logic ---
 
 
-        function applyFilters() {
+function applyFilters() {
              let currentFiltered = [...excelData];
+             // console.log("Initial data length:", currentFiltered.length);
 
+             // 1. Apply Freeform Skills Filter (Corrected Logic)
              const skillsValue = skillsetFilterInput.value.trim().toLowerCase();
              if (skillsValue && skillColumnNames.length > 0) {
                  const skillsToSearch = skillsValue.split(',').map(s => s.trim()).filter(Boolean);
                  if (skillsToSearch.length > 0) {
-                     currentFiltered = currentFiltered.filter(row =>
-                         skillColumnNames.some(skillCol => String(row[skillCol] || '').toLowerCase().includes(skillsToSearch.some(searchTerm => String(row[skillCol] || '').toLowerCase().includes(searchTerm))))
-                     );
+                     // console.log("Applying Skills Filter. Terms:", skillsToSearch, "Columns:", skillColumnNames);
+                     currentFiltered = currentFiltered.filter(row => {
+                         // Check if *any* relevant, visible skill column contains *any* of the searched skills
+                         return skillColumnNames.some(skillCol => {
+                             // Only filter based on visible columns
+                             if (!visibleColumns.includes(skillCol)) return false;
+
+                             const cellValue = String(row[skillCol] || '').toLowerCase();
+                             // Check if the cell value includes *any* of the search terms
+                             return skillsToSearch.some(searchTerm => cellValue.includes(searchTerm));
+                         });
+                     });
+                     // console.log("After Skills Filter, rows:", currentFiltered.length);
                  }
              }
 
+             // 2. Apply Custom Multi-Select Filters
              filterContainer.querySelectorAll('.custom-multiselect-container').forEach(container => {
                  const column = container.dataset.column;
                  const checkedOptions = container.querySelectorAll('.option-checkbox:checked');
                  const selectedValues = Array.from(checkedOptions).map(cb => cb.value);
+
                  if (selectedValues.length > 0 && column && visibleColumns.includes(column)) {
-                     currentFiltered = currentFiltered.filter(row => selectedValues.includes(String(row[column] || '')));
+                     // console.log(`Applying Filter for ${column}. Selected:`, selectedValues);
+                     currentFiltered = currentFiltered.filter(row => {
+                         const rowValue = String(row[column] || '');
+                         // Check if the row's value exactly matches one of the selected values
+                         return selectedValues.includes(rowValue);
+                     });
+                     // console.log(`After ${column} Filter, rows:`, currentFiltered.length);
                  }
              });
 
+             // 3. Apply Global Search Filter
              const search = searchInput.value.toLowerCase().trim();
              if (search !== '') {
+                 // console.log("Applying Global Search:", search);
                  currentFiltered = currentFiltered.filter(r =>
+                    // Search only within visible columns
                     visibleColumns.some(h => r.hasOwnProperty(h) && String(r[h] || '').toLowerCase().includes(search))
                  );
+                 // console.log("After Global Search, rows:", currentFiltered.length);
              }
 
              filteredData = currentFiltered;
-             currentPage = 1;
+             currentPage = 1; // Reset to first page after filtering
              renderTable();
-             closeMenu();
+             closeMenu(); // Close sidenav after applying
         }
 
         function resetFilters() {
