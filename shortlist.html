@@ -130,7 +130,14 @@
 
         .input-field { padding: 0.5rem; border-radius: 0.375rem; width: 100%; transition: all 0.3s; background-color: var(--input-bg); border: 1px solid var(--input-border); color: inherit; }
         .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2); }
-        select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
+        /* Style for standard select */
+        select.input-field:not([multiple]) { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
+        /* Style for multi-select to make it more usable */
+        select[multiple].input-field { height: 100px; /* Adjust height as needed */ overflow-y: auto; padding-right: 0.5rem; /* Remove arrow space */ }
+        select[multiple].input-field option { padding: 4px 8px; }
+        select[multiple].input-field option:checked { background-color: var(--primary-light); color: white; }
+        .dark select[multiple].input-field option:checked { background-color: var(--primary); color: white; }
+
         /* Specific style for pagination select */
         #rowsPerPageSelect { width: auto; min-width: 70px; padding-left: 0.5rem; padding-right: 2rem; background-size: 1.2em 1.2em; }
 
@@ -216,9 +223,10 @@
             <div>
                 <h2 class="text-lg font-semibold mb-3">Filters</h2>
                 <div id="filterContainer">
+                    <!-- Static Skills Filter -->
                     <div class="filter-item">
-                        <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Primary Skill</label>
-                        <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills">
+                        <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Skills Filter</label>
+                        <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills..." title="Searches skill/competency columns">
                     </div>
                     <!-- Dynamic filters will be added here -->
                 </div>
@@ -371,6 +379,8 @@
         const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"; // Replace or use secure method
         let excelData = []; let filteredData = []; let shortlistedData = [];
         let allHeaders = []; let visibleColumns = [];
+        let skillColumnNames = []; // Columns identified as containing skills
+        const skillKeywords = ['skill', 'competency', 'tech', 'tool', 'language']; // Keywords to identify skill columns
         let theme = 'light'; // Default to light mode
         let feedbackData = {}; let currentFileName = null;
         let currentPage = 1;
@@ -391,6 +401,7 @@
         const shortlistedGroupsContainer = document.getElementById('shortlistedGroupsContainer');
         const noShortlistedMessage = document.getElementById('noShortlistedMessage');
         const filterContainer = document.getElementById('filterContainer');
+        const skillsetFilterInput = document.getElementById('skillsetFilter'); // Specific input for skills
         const applyFiltersBtn = document.getElementById('applyFiltersBtn');
         const resetFiltersBtn = document.getElementById('resetFiltersBtn');
         const searchInput = document.getElementById('searchInput'); // Single search input
@@ -516,56 +527,82 @@
         }
 
         function processExcelData(data, sourceFileName) {
-            excelData = []; filteredData = [];
+            excelData = []; filteredData = []; skillColumnNames = []; // Reset skill columns
             allHeaders = data[0].map(h => String(h || '').trim()).filter(Boolean);
-            if (allHeaders.length === 0) { alert(`No headers in "${sourceFileName}".`); resetCurrentFileState(); return; }
-            // Reset visible columns only if headers change significantly? For now, keep them if they exist.
+            if (allHeaders.length === 0) { alert(`No headers found in "${sourceFileName}".`); resetCurrentFileState(); return; }
+
+            // Identify skill-related columns
+            allHeaders.forEach(header => {
+                const lowerHeader = header.toLowerCase();
+                if (skillKeywords.some(keyword => lowerHeader.includes(keyword))) {
+                    skillColumnNames.push(header);
+                }
+            });
+            console.log("Identified Skill Columns:", skillColumnNames); // For debugging
+
+            // Reset visible columns intelligently
             if (visibleColumns.length === 0 || !allHeaders.some(h => visibleColumns.includes(h))) {
                 visibleColumns = [...allHeaders];
             } else {
-                // Keep existing visible columns, but remove any that are no longer in the new headers
                 visibleColumns = visibleColumns.filter(vc => allHeaders.includes(vc));
-                // Add any new essential headers if needed (optional)
             }
 
             let rowsAdded = 0;
             for (let i = 1; i < data.length; i++) {
                 const row = data[i]; if (!row?.length || row.every(cell => cell == null || String(cell).trim() === '')) continue;
                 const rowData = {};
-                for (let j = 0; j < allHeaders.length; j++) rowData[allHeaders[j]] = row[j] ?? '';
+                for (let j = 0; j < allHeaders.length; j++) { // Use allHeaders length
+                    rowData[allHeaders[j]] = row[j] ?? ''; // Assign based on header index
+                }
                 rowData._id = `${sourceFileName}-row-${i}`; rowData._sourceFile = sourceFileName;
                 excelData.push(rowData); rowsAdded++;
             }
-            if (rowsAdded === 0) { alert(`No data rows in "${sourceFileName}".`); resetCurrentFileState(); return; }
+            if (rowsAdded === 0) { alert(`No data rows found in "${sourceFileName}".`); resetCurrentFileState(); return; }
 
             filteredData = [...excelData];
-            currentPage = 1; // Reset to first page
-            rowsPerPage = parseInt(rowsPerPageSelect.value) || 25; // Use current selection or default
+            currentPage = 1;
+            rowsPerPage = parseInt(rowsPerPageSelect.value) || 25;
 
             createColumnToggles();
-            createFilterOptions();
+            createFilterOptions(); // Generate filters including multi-selects
             updateShortlistedTab();
             noDataMessage.style.display = 'none';
             noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
-            paginationControls.style.display = 'flex'; // Show pagination
+            paginationControls.style.display = 'flex';
 
-            resetFilters(); // Also resets search and calls applyFilters -> renderTable
+            resetFilters(); // Calls applyFilters -> renderTable
             switchTab('all');
         }
 
         function resetCurrentFileState() {
-            excelData = []; filteredData = []; allHeaders = []; // Reset visibleColumns? Maybe keep user's preference? Let's keep them for now.
+            excelData = []; filteredData = []; allHeaders = []; skillColumnNames = [];
+            // Maybe keep visibleColumns preference? Let's keep them for now.
             tableHeader.innerHTML = '<th><input type="checkbox" id="selectAllCheckbox" title="Select/Deselect all rows on this page"></th>';
             tableBody.innerHTML = '';
             const selectAll = document.getElementById('selectAllCheckbox'); if (selectAll) selectAll.disabled = true;
             noDataMessage.style.display = 'block'; noDataMessage.textContent = "Upload an Excel file or check previous file for errors.";
-            paginationControls.style.display = 'none'; // Hide pagination
-            updateAddToShortlistButtonState(); // Reset button
+            paginationControls.style.display = 'none';
+            updateAddToShortlistButtonState();
             currentPage = 1;
-            updatePaginationControls(); // Update display (will show 0-0 of 0)
+            updatePaginationControls();
             filterContainer.innerHTML = ''; // Clear dynamic filters
-            columnToggleContainer.innerHTML = ''; // Clear column toggles
-            searchInput.value = ''; // Clear search
+             // Re-add the static skills filter input structure if it was cleared
+             if (!document.getElementById('skillsetFilter')) {
+                 const skillsDiv = document.createElement('div');
+                 skillsDiv.className = 'filter-item';
+                 skillsDiv.innerHTML = `
+                     <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Skills Filter</label>
+                     <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills..." title="Searches skill/competency columns">
+                 `;
+                 filterContainer.insertBefore(skillsDiv, filterContainer.firstChild);
+                 // Re-assign the global variable after recreating the element
+                 skillsetFilterInput = document.getElementById('skillsetFilter');
+             } else {
+                skillsetFilterInput.value = ''; // Clear existing skills input
+             }
+
+            columnToggleContainer.innerHTML = '';
+            searchInput.value = '';
         }
 
         function renderTable() {
@@ -601,7 +638,7 @@
                  currentSelectAllCheckbox.checked = false; // Always reset on page change/render
              }
 
-            // 5. Update No Data Message
+            // 5. Update No Data Message & Pagination Visibility
             noDataMessage.style.display = excelData.length === 0 ? 'block' : (filteredData.length === 0 ? 'block' : 'none');
             if (excelData.length > 0 && filteredData.length === 0) {
                 noDataMessage.textContent = "No data matches filters/search.";
@@ -610,6 +647,7 @@
                 noDataMessage.textContent = "Upload an Excel file.";
                 paginationControls.style.display = 'none';
             } else {
+                 noDataMessage.style.display = 'none'; // Hide message if data exists
                 paginationControls.style.display = 'flex'; // Ensure pagination is visible if there's data
             }
 
@@ -654,7 +692,6 @@
             renderTable();
         }
 
-
         function renderShortlistedTable() { // (No pagination needed here, but includes theme update for table)
             shortlistedGroupsContainer.innerHTML = ''; noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none'; if (shortlistedData.length === 0) return;
             const groupedData = shortlistedData.reduce((acc, row) => { const fileKey = row._sourceFile || 'Unknown'; if (!acc[fileKey]) acc[fileKey] = []; acc[fileKey].push(row); return acc; }, {});
@@ -667,7 +704,6 @@
                 groupDeleteBtn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Del Group'; groupDeleteBtn.title = `Remove all from ${filename}`; groupDeleteBtn.dataset.filename = filename;
                 summary.append(summaryText, groupDeleteBtn);
                 const groupContent = document.createElement('div'); groupContent.className = 'group-content';
-                // Apply theme class dynamically to the table container
                 const tableContainer = document.createElement('div'); tableContainer.className = `table-container ${theme}`; // Apply theme dynamically
                 const table = document.createElement('table'); const thead = document.createElement('thead'); const tbody = document.createElement('tbody');
                 table.append(thead, tbody); tableContainer.appendChild(table); groupContent.appendChild(tableContainer);
@@ -679,7 +715,7 @@
                     visibleColumns.forEach(header => { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); });
                     const feedbackTd = document.createElement('td'); const feedbackBtn = document.createElement('button');
                     feedbackBtn.innerHTML = '<i class="fas fa-comment-dots"></i>'; feedbackBtn.className = 'p-1 rounded text-white text-xs';
-                    const hasFeedback = feedbackData[row._id]?.feedback; feedbackBtn.classList.add(hasFeedback ? 'bg-blue-500' : 'bg-gray-500');
+                    const hasFeedback = feedbackData[row._id]?.feedback; feedbackBtn.classList.toggle('bg-blue-500', !!hasFeedback); feedbackBtn.classList.toggle('bg-gray-500', !hasFeedback);
                     feedbackBtn.title = hasFeedback ? `View/Edit: ${feedbackData[row._id].feedback.substring(0,50)}...` : 'Add Feedback';
                     feedbackBtn.addEventListener('click', () => showFeedbackForm(row._id)); feedbackTd.appendChild(feedbackBtn); tr.appendChild(feedbackTd);
                     const contactedTd = document.createElement('td'); const contactedIcon = document.createElement('i');
@@ -702,21 +738,18 @@
          }
 
         function createFilterOptions() {
-             const skillsetFilterItem = filterContainer.querySelector('.filter-item:first-child'); // Keep the Primary Skill input if it exists
-             filterContainer.innerHTML = ''; // Clear previous dynamic filters
-             if (skillsetFilterItem) filterContainer.appendChild(skillsetFilterItem); // Re-add primary skill input
+             // Clear only dynamic filters, keep the static skills filter input
+             filterContainer.querySelectorAll('.filter-item:not(:first-child)').forEach(el => el.remove());
 
              const currentFileHeaders = excelData.length > 0 ? Object.keys(excelData[0]).filter(h => h !== '_id' && h !== '_sourceFile') : allHeaders;
-             visibleColumns.forEach(header => {
-                 if (!currentFileHeaders.includes(header)) return;
-                 const isPrimarySkill = header.toLowerCase() === 'primary skill'; // Already handled above
-                 if (isPrimarySkill) {
-                     const label = filterContainer.querySelector('label[for="skillsetFilter"]');
-                     if (label) label.textContent = header; // Update label text if header name differs slightly
-                     return;
-                 }
 
-                 // Generate dropdowns for columns with a reasonable number of unique values
+             visibleColumns.forEach(header => {
+                 // Skip if it's a column already handled by the freeform skills filter
+                 if (skillColumnNames.includes(header)) return;
+
+                 if (!currentFileHeaders.includes(header)) return; // Skip if header not in current data
+
+                 // Generate multi-select dropdowns for columns with a reasonable number of unique values
                  const uniqueValues = [...new Set(excelData.map(row => row[header]))]
                     .map(val => String(val ?? '').trim())
                     .filter(v => v !== '')
@@ -727,11 +760,16 @@
                      const label = document.createElement('label');
                      const id = `filter-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
                      label.htmlFor = id; label.className = 'block mb-1 text-sm font-medium'; label.textContent = header;
-                     const select = document.createElement('select'); select.id = id;
-                     select.className = 'input-field text-sm'; select.dataset.column = header;
-                     select.innerHTML = `<option value="">-- Select ${header} --</option>`;
+                     const select = document.createElement('select');
+                     select.id = id;
+                     select.className = 'input-field text-sm'; // Basic input styling
+                     select.multiple = true; // Enable multi-select
+                     select.title = "Hold Ctrl (or Cmd on Mac) to select multiple options"; // Guide user
+                     select.dataset.column = header;
+                     // Add placeholder/instruction? Not standard for multi-select, rely on label/title.
                      uniqueValues.forEach(v => {
-                         const opt = document.createElement('option'); opt.value = v; opt.textContent = v;
+                         const opt = document.createElement('option');
+                         opt.value = v; opt.textContent = v;
                          select.appendChild(opt);
                      });
                      item.append(label, select); filterContainer.appendChild(item);
@@ -741,31 +779,38 @@
 
         function applyFilters() {
              let currentFiltered = [...excelData];
-             // Apply Primary Skill filter (assuming it exists and is visible)
-             const skillsetFilterInput = document.getElementById('skillsetFilter');
-             const primarySkillHeader = allHeaders.find(h => h.toLowerCase() === 'primary skill'); // Find the exact header name
-             if (primarySkillHeader && skillsetFilterInput && visibleColumns.includes(primarySkillHeader)) {
-                 const val = skillsetFilterInput.value.trim().toLowerCase();
-                 if (val) {
-                     const skills = val.split(',').map(s => s.trim()).filter(Boolean);
-                     if (skills.length > 0) {
-                         currentFiltered = currentFiltered.filter(row => {
-                             const rowSkill = String(row[primarySkillHeader] || '').toLowerCase();
-                             return skills.some(skill => rowSkill.includes(skill));
+
+             // 1. Apply Freeform Skills Filter (across identified skill columns)
+             const skillsValue = skillsetFilterInput.value.trim().toLowerCase();
+             if (skillsValue && skillColumnNames.length > 0) {
+                 const skillsToSearch = skillsValue.split(',').map(s => s.trim()).filter(Boolean);
+                 if (skillsToSearch.length > 0) {
+                     currentFiltered = currentFiltered.filter(row => {
+                         // Check if *any* skill column contains *any* of the searched skills
+                         return skillColumnNames.some(skillCol => {
+                             const cellValue = String(row[skillCol] || '').toLowerCase();
+                             return skillsToSearch.some(searchTerm => cellValue.includes(searchTerm));
                          });
-                     }
+                     });
                  }
              }
 
-             // Apply dropdown filters
-             filterContainer.querySelectorAll('select').forEach(f => {
-                 const v = f.value; const c = f.dataset.column;
-                 if (v && c && visibleColumns.includes(c)) {
-                      currentFiltered = currentFiltered.filter(r => String(r[c] || '') === String(v));
+             // 2. Apply Multi-Select Dropdown Filters
+             filterContainer.querySelectorAll('select[multiple]').forEach(selectElement => {
+                 const column = selectElement.dataset.column;
+                 const selectedOptions = Array.from(selectElement.selectedOptions);
+                 const selectedValues = selectedOptions.map(opt => opt.value);
+
+                 if (selectedValues.length > 0 && column && visibleColumns.includes(column)) {
+                     currentFiltered = currentFiltered.filter(row => {
+                         const rowValue = String(row[column] || '');
+                         // Check if the row's value is one of the selected values for this filter
+                         return selectedValues.includes(rowValue);
+                     });
                  }
              });
 
-             // Apply search filter (across visible columns)
+             // 3. Apply Global Search Filter (across visible columns)
              const search = searchInput.value.toLowerCase().trim();
              if (search !== '') {
                  currentFiltered = currentFiltered.filter(r =>
@@ -780,15 +825,20 @@
         }
 
         function resetFilters() {
-            // Reset skill input
-            const skillset = document.getElementById('skillsetFilter'); if(skillset) skillset.value = '';
-            // Reset dropdowns
-            filterContainer.querySelectorAll('select').forEach(f => f.value = '');
-            // Reset search
+            // Reset freeform skills input
+            skillsetFilterInput.value = '';
+            // Reset multi-select dropdowns
+            filterContainer.querySelectorAll('select[multiple]').forEach(select => {
+                 Array.from(select.options).forEach(option => {
+                     option.selected = false;
+                 });
+             });
+            // Reset search input
             searchInput.value = '';
             // Apply (which resets data to original, resets page, and renders)
             applyFilters();
         }
+
 
         function createColumnToggles() {
             columnToggleContainer.innerHTML = '';
@@ -808,22 +858,21 @@
              if (idx > -1) { // Remove column
                  visibleColumns.splice(idx, 1);
              } else { // Add column - attempt to insert logically or just append
-                 // Simple append:
-                 // visibleColumns.push(header);
-                 // Attempt to insert based on original allHeaders order:
                  const newVis = [];
                  let added = false;
                  allHeaders.forEach(h => {
                      if (visibleColumns.includes(h)) newVis.push(h);
                      else if (h === header) { newVis.push(h); added = true; }
                  });
-                 if (!added) newVis.push(header); // Fallback if header wasn't in original (shouldn't happen)
+                 if (!added) newVis.push(header); // Fallback
                  visibleColumns = newVis;
              }
              currentPage = 1; // Reset page as columns change
              renderTable();
              updateShortlistedTab(); // Re-render shortlist table if active
-             createFilterOptions(); // Re-evaluate filters based on visible columns
+             // Re-generate filter options based on NEW visible columns (might remove filters for hidden cols)
+             // Note: This might clear existing selections in the filters that remain. Consider preserving state if needed.
+             createFilterOptions();
          }
 
         // Handles checkbox changes in the table body
@@ -901,7 +950,7 @@
             if (tab === 'all') {
                 allDataTab.classList.add('active'); allDataContent.classList.add('active');
                 // Ensure table is rendered if switching back
-                if (excelData.length > 0) renderTable();
+                if (excelData.length > 0) renderTable(); else updatePaginationControls(); // Update pagination even if no data
             } else {
                 shortlistedTab.classList.add('active'); shortlistedContent.classList.add('active');
                 renderShortlistedTable(); // Render shortlist when tab is active
@@ -940,9 +989,9 @@
             }
             aiResponseContainer.innerHTML = '<p>🤖 Thinking...</p>'; askAiBtn.disabled = true; aiQuestion.disabled = true;
 
-            // Use currently filtered data for context, but potentially limited rows
-            const ctxData = filteredData; // Use the full filtered data for context if possible
-            const ctxHeaders = visibleColumns.filter(h => allHeaders.includes(h)); // Use visible columns
+            // Use currently filtered data for context
+            const ctxData = filteredData;
+            const ctxHeaders = visibleColumns.filter(h => allHeaders.includes(h));
 
             if (ctxData.length === 0) {
                 aiResponseContainer.innerHTML = '<p class="text-yellow-500">No data in "All Data" tab to analyze.</p>';
@@ -954,26 +1003,17 @@
             }
 
             try {
-                 // Limit sample size sent to AI if data is large
-                 const sampleSize = Math.min(ctxData.length, 50); // Send up to 50 rows as sample
+                 const sampleSize = Math.min(ctxData.length, 50); // Limit sample size
                  let csvSample = ctxHeaders.join(",") + "\n";
                  for (let i = 0; i < sampleSize; i++) {
-                     csvSample += ctxHeaders.map(h => `"${String(ctxData[i][h] ?? '').replace(/"/g, '""')}"`).join(",") + "\n"; // CSV encode values
+                     csvSample += ctxHeaders.map(h => `"${String(ctxData[i][h] ?? '').replace(/"/g, '""')}"`).join(",") + "\n";
                  }
 
-                 const prompt = `You are an assistant analyzing data from an Excel file named "${currentFileName || 'unknown'}".
-The data might be filtered. The available columns are: ${ctxHeaders.join(", ")}.
-Here is a sample of up to ${sampleSize} rows (out of ${ctxData.length} total matching rows):
-\`\`\`csv
-${csvSample}
-\`\`\`
-Based *only* on the provided sample data and column names, answer the following question concisely. If the sample is insufficient to answer, state that clearly. Use simple markdown for formatting (bold, lists).
-
-Question: ${q}`;
+                 const prompt = `Analyze data from "${currentFileName || 'unknown'}". Columns: ${ctxHeaders.join(", ")}. Total matching rows: ${ctxData.length}. Sample (up to ${sampleSize} rows):\n\`\`\`csv\n${csvSample}\`\`\`\nContext: Data may be filtered by user selections.\nQ: ${q}\nAnswer concisely based ONLY on the sample provided. State if insufficient. Use simple markdown.`;
 
                  const responseText = await fetchGeminiResponse(prompt);
                  aiResponseContainer.innerHTML = `<div class="markdown">${formatAiResponse(responseText)}</div>`;
-                 aiQuestion.value = ''; // Clear question input
+                 aiQuestion.value = '';
             } catch (e) {
                  console.error("AI Error:", e);
                  aiResponseContainer.innerHTML = `<p class="text-red-500">AI Error: ${e.message}. Check console.</p>`;
@@ -982,41 +1022,32 @@ Question: ${q}`;
             }
          }
 
-        async function fetchGeminiResponse(prompt) {
+        async function fetchGeminiResponse(prompt) { // Using v1beta model endpoint
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-            const requestBody = {
-                contents: [{ parts: [{ text: prompt }] }],
-                // Optional: Add safety settings if needed
-                // safetySettings: [
-                //   { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-                //   { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-                // ],
-            };
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Gemini API Error Response:", errorData);
-                throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // Check for safety blocks or other issues
-            if (data.promptFeedback?.blockReason) {
-                throw new Error(`Request blocked due to: ${data.promptFeedback.blockReason}`);
-            }
-            if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                 if (data.candidates?.[0]?.finishReason && data.candidates?.[0]?.finishReason !== 'STOP') {
-                     throw new Error(`AI generation stopped unexpectedly: ${data.candidates[0].finishReason}`);
+            const requestBody = { contents: [{ parts: [{ text: prompt }] }] };
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(requestBody)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("Gemini API Error Response:", errorData);
+                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.promptFeedback?.blockReason) throw new Error(`Request blocked: ${data.promptFeedback.blockReason}`);
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!text) {
+                     if (data.candidates?.[0]?.finishReason && data.candidates?.[0]?.finishReason !== 'STOP') throw new Error(`Incomplete: ${data.candidates[0].finishReason}`);
+                     throw new Error('Empty AI response.');
                  }
-                throw new Error('Received an empty response from the AI.');
+                return text;
+            } catch (error) {
+                console.error("Fetch Gemini Error:", error);
+                throw error; // Re-throw to be caught by askAi
             }
-            return data.candidates[0].content.parts[0].text;
         }
 
         // Basic markdown formatting
@@ -1052,7 +1083,7 @@ Question: ${q}`;
              // Set initial state
              rowsPerPage = parseInt(rowsPerPageSelect.value, 10);
              currentPage = 1;
-             resetCurrentFileState();
+             resetCurrentFileState(); // Includes setting up filter container base
              updateShortlistedTab();
              manageColumnsSection.classList.remove('expanded');
              const chevron = manageColumnsToggle.querySelector('i'); if (chevron) { chevron.className = 'fas fa-chevron-down'; }
