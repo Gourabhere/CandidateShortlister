@@ -17,57 +17,65 @@
             --background-light: #f9fafb;
             --text-dark: #1f2937;
             --text-light: #f3f4f6;
-            --card-dark: rgba(17, 24, 39, 0.8);
-            --card-light: rgba(249, 250, 251, 0.8);
-            --shadow-color: rgba(107, 114, 128, 0.25);
-            --neon-glow: 0 0 10px var(--primary-light);
-            --danger: #ef4444; /* Red for delete/clear */
+            --card-dark: rgba(31, 41, 55, 0.7); /* Darker card */
+            --card-light: rgba(255, 255, 255, 0.7); /* Lighter card */
+            --border-dark: rgba(55, 65, 81, 0.8);
+            --border-light: rgba(209, 213, 219, 0.8);
+            --shadow-color-dark: rgba(0, 0, 0, 0.3);
+            --shadow-color-light: rgba(107, 114, 128, 0.2);
+            --danger: #ef4444;
             --danger-light: #f87171;
         }
 
+        /* Base styles */
         body {
             font-family: 'Inter', sans-serif;
             transition: background-color 0.3s, color 0.3s;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
+        /* Theme specific styles */
         .dark {
             background-color: var(--background-dark);
             color: var(--text-light);
+            --card-bg: var(--card-dark);
+            --border-color: var(--border-dark);
+            --shadow-color-current: var(--shadow-color-dark);
+            --input-bg: rgba(55, 65, 81, 0.8);
+            --input-border: rgba(75, 85, 99, 0.5);
+            --th-bg: rgba(31, 41, 55, 0.9);
+            --hover-bg: rgba(55, 65, 81, 0.5);
+            --selected-bg: rgba(139, 92, 246, 0.2); /* Primary light with alpha */
+            --details-bg: rgba(55, 65, 81, 0.2);
+            --markdown-pre-bg: rgba(55, 65, 81, 0.7);
+            --markdown-code-bg: rgba(75, 85, 99, 0.7);
         }
 
         .light {
             background-color: var(--background-light);
             color: var(--text-dark);
+            --card-bg: var(--card-light);
+            --border-color: var(--border-light);
+            --shadow-color-current: var(--shadow-color-light);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --input-border: rgba(209, 213, 219, 0.7);
+            --th-bg: rgba(243, 244, 246, 0.9);
+            --hover-bg: rgba(229, 231, 235, 0.5);
+            --selected-bg: rgba(196, 181, 253, 0.3); /* Primary lighter with alpha */
+            --details-bg: rgba(229, 231, 235, 0.4);
+            --markdown-pre-bg: rgba(229, 231, 235, 0.8);
+            --markdown-code-bg: rgba(209, 213, 219, 0.8);
         }
 
         .glass {
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-        }
-
-        .glass.dark {
-            background-color: var(--card-dark);
-        }
-
-        .glass.light {
-            background-color: var(--card-light);
-        }
-
-        .neon-border {
-            border: 1px solid var(--primary-light);
-            box-shadow: var(--neon-glow);
-        }
-
-        .neon-text {
-            color: var(--primary-light);
-            text-shadow: var(--neon-glow);
-        }
-
-        .gradient-bg {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px 0 var(--shadow-color-current);
         }
 
         .gradient-text {
@@ -77,486 +85,165 @@
         }
 
         .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            opacity: 1;
+            padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s ease; cursor: pointer; opacity: 1; border: none;
         }
-         .btn:disabled {
-             opacity: 0.5;
-             cursor: not-allowed;
-             box-shadow: none;
-         }
+         .btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-light); box-shadow: 0 0 10px var(--primary-light); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 0 10px var(--secondary); }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover:not(:disabled) { background-color: var(--danger-light); box-shadow: 0 0 10px var(--danger); }
+        .btn-icon { background: none; border: none; padding: 0.5rem; border-radius: 50%; transition: background-color 0.2s; }
+        .btn-icon:hover { background-color: rgba(128, 128, 128, 0.2); }
+        .dark .btn-icon:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .light .btn-icon:hover { background-color: rgba(0, 0, 0, 0.1); }
 
+        .tab { display: none; }
+        .tab.active { display: block; }
+        .tab-btn { border-bottom: 2px solid transparent; transition: border-color 0.3s, color 0.3s; }
+        .tab-btn.active { border-bottom: 2px solid var(--primary); color: var(--primary-light); font-weight: 700; }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
+        .hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; cursor: pointer; }
+        .hamburger div { width: 100%; height: 2px; background-color: currentColor; transition: all 0.3s; }
+        .hamburger.active div:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger.active div:nth-child(2) { opacity: 0; }
+        .hamburger.active div:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-        .btn-primary:hover:not(:disabled) {
-            background: var(--primary-light);
-            box-shadow: var(--neon-glow);
-        }
+        .sidenav { height: 100%; width: 0; position: fixed; z-index: 30; top: 0; left: 0; overflow-y: auto; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 1px solid var(--border-color); }
+        .sidenav.glass { border: none; } /* Remove border if glass */
+        .sidenav .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
 
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
+        .filter-item { margin-bottom: 15px; }
+        .table-container { overflow-x: auto; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; font-size: 0.9rem; }
+        th { background-color: var(--th-bg); font-weight: 600; }
+        tr { transition: background-color 0.2s; }
+        tr.selected { background-color: var(--selected-bg) !important; }
+        tr:hover:not(.selected) { background-color: var(--hover-bg); }
 
-        .btn-secondary:hover:not(:disabled) {
-            opacity: 0.9;
-            box-shadow: 0 0 10px var(--secondary);
-        }
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-        .btn-danger:hover:not(:disabled) {
-            background-color: var(--danger-light);
-             box-shadow: 0 0 10px var(--danger);
-        }
+        .input-field { padding: 0.5rem; border-radius: 0.375rem; width: 100%; transition: all 0.3s; background-color: var(--input-bg); border: 1px solid var(--input-border); color: inherit; }
+        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2); }
+        select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
 
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
+        .checkbox-container { display: flex; align-items: center; }
+        .checkbox-container input[type="checkbox"] { margin-right: 8px; cursor: pointer; }
+        .checkbox-container label { cursor: pointer; }
+        .manage-columns-container { margin-bottom: 1.5rem; }
+        .manage-columns { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .manage-columns.expanded { max-height: 300px; overflow-y: auto; }
+        .ai-response { max-height: calc(100vh - 200px); /* Adjust based on surrounding elements */ overflow-y: auto; margin-top: 10px; padding: 10px; border-radius: 8px; background-color: rgba(0,0,0,0.05); }
+        .dark .ai-response { background-color: rgba(255,255,255,0.05); }
+        .feedback-form { padding: 15px; border-radius: 8px; margin-top: 10px; }
+        .feedback-item { margin-bottom: 10px; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(109, 40, 217, 0); } 100% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0); } }
+        .pulse-animation { animation: pulse 2s infinite; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        /* Shortlist Group Styles */
+        .shortlist-group details { border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem; background-color: var(--details-bg); }
+        .shortlist-group summary { padding: 0.75rem 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); list-style: none; }
+        .shortlist-group summary::-webkit-details-marker { display: none; }
+        .shortlist-group summary::before { content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; margin-right: 0.5rem; transition: transform 0.2s ease-in-out; display: inline-block; font-size: 0.9em; }
+        .shortlist-group details[open] > summary::before { transform: rotate(-180deg); }
+        .shortlist-group .group-content { padding: 0; }
+        .group-delete-btn, .row-delete-btn { background: none; border: none; color: var(--danger); cursor: pointer; padding: 0.25rem 0.5rem; font-size: 0.9em; margin-left: 0.5rem; border-radius: 4px; transition: background-color 0.2s, color 0.2s; }
+        .group-delete-btn:hover, .row-delete-btn:hover { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-light); }
+        .shortlist-group .table-container { margin-top: 0; border-radius: 0 0 8px 8px; border: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; background-color: transparent; }
+        .shortlist-group th:last-child, .shortlist-group td:last-child { text-align: center; }
 
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
+        /* Markdown formatting */
+        .markdown pre { background-color: var(--markdown-pre-bg); padding: 0.75rem; border-radius: 6px; overflow-x: auto; font-size: 0.875em; margin: 0.5rem 0; }
+        .markdown code { font-family: 'Courier New', Courier, monospace; }
+        .markdown pre code { background-color: transparent; padding: 0; }
+        .markdown code:not(pre code) { background-color: var(--markdown-code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
 
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--primary);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
-
-        .tab {
-            display: none;
-        }
-
-        .tab.active {
-            display: block;
-        }
-
-        .tab-btn {
-             border-bottom: 2px solid transparent;
-             transition: border-color 0.3s, color 0.3s;
-        }
-        .tab-btn.active {
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary-light);
-            font-weight: 700;
-        }
-
-
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .hamburger div {
-            width: 100%;
-            height: 2px;
-            background-color: currentColor;
-            transition: all 0.3s;
-        }
-
-        .hamburger.active div:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-
-        .hamburger.active div:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active div:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-
-        .sidenav {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 10;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            transition: 0.3s;
-            padding-top: 60px;
-        }
-
-        .sidenav.dark {
-            background-color: var(--background-dark);
-        }
-
-        .sidenav.light {
-            background-color: var(--background-light);
-        }
-
-        .sidenav .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .filter-item {
-            margin-bottom: 15px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            border-radius: 8px;
-            margin-top: 10px; /* Reduced margin */
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(107, 114, 128, 0.2);
-            white-space: nowrap;
-        }
-
-        tr {
-            transition: background-color 0.3s;
-        }
-        tr.selected { /* Style for selected rows in All Data */
-             background-color: rgba(109, 40, 217, 0.15); /* Subtle purple highlight */
-         }
-        tr:hover:not(.selected) {
-            background-color: rgba(107, 114, 128, 0.1);
-        }
-
-        .dark th {
-            background-color: rgba(31, 41, 55, 0.8);
-        }
-
-        .light th {
-            background-color: rgba(243, 244, 246, 0.8);
-        }
-
-        .input-field {
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        .dark .input-field {
-            background-color: rgba(31, 41, 55, 0.8);
-            color: var(--text-light);
-            border: 1px solid rgba(75, 85, 99, 0.5);
-        }
-
-        .light .input-field {
-            background-color: white;
-            color: var(--text-dark);
-            border: 1px solid rgba(209, 213, 219, 0.5);
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.2);
-        }
-
-        select.input-field {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .checkbox-container input[type="checkbox"] {
-            margin-right: 8px;
-            cursor: pointer;
-        }
-        .checkbox-container label {
-             cursor: pointer;
-        }
-
-        .manage-columns-container {
-             margin-bottom: 2rem;
-        }
-
-        .manage-columns {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .manage-columns.expanded {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .ai-response {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .dark .ai-response {
-            background-color: rgba(31, 41, 55, 0.5);
-        }
-
-        .light .ai-response {
-            background-color: rgba(243, 244, 246, 0.5);
-        }
-
-        .feedback-form {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-
-        .dark .feedback-form {
-            background-color: rgba(31, 41, 55, 0.5);
-        }
-
-        .light .feedback-form {
-            background-color: rgba(243, 244, 246, 0.5);
-        }
-
-        .feedback-item {
-            margin-bottom: 10px;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(109, 40, 217, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(109, 40, 217, 0); }
-        }
-
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-
-        .hide-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .hide-scroll {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-         .shortlist-group details {
-            border: 1px solid rgba(107, 114, 128, 0.3);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-         .dark .shortlist-group details {
-             background-color: rgba(55, 65, 81, 0.2);
-         }
-         .light .shortlist-group details {
-             background-color: rgba(229, 231, 235, 0.3);
-         }
-
-        .shortlist-group summary {
-            padding: 0.75rem 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(107, 114, 128, 0.2);
-            list-style: none;
-        }
-         .shortlist-group summary::-webkit-details-marker {
-             display: none;
-         }
-
-         .shortlist-group summary::before {
-             content: '\f078';
-             font-family: 'Font Awesome 6 Free';
-             font-weight: 900;
-             margin-right: 0.5rem;
-             transition: transform 0.2s ease-in-out;
-             display: inline-block;
-             font-size: 0.9em;
-         }
-
-         .shortlist-group details[open] > summary::before {
-             transform: rotate(-180deg);
-         }
-
-        .shortlist-group .group-content {
-            padding: 0;
-        }
-
-        .group-delete-btn, .row-delete-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.9em;
-            margin-left: 0.5rem;
-            border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .group-delete-btn:hover, .row-delete-btn:hover {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-light);
-        }
-
-        .shortlist-group .table-container {
-             margin-top: 0;
-             border-top-left-radius: 0;
-             border-top-right-radius: 0;
-             border: none;
-             box-shadow: none;
-             backdrop-filter: none;
-             -webkit-backdrop-filter: none;
-             background-color: transparent;
-        }
-
-        .shortlist-group th:last-child,
-        .shortlist-group td:last-child {
-            text-align: center;
-        }
-
-        .markdown pre {
-             background-color: rgba(55, 65, 81, 0.7);
-             padding: 0.75rem;
-             border-radius: 6px;
-             overflow-x: auto;
-             font-size: 0.875em;
-             margin: 0.5rem 0;
-         }
-         .markdown code {
-             font-family: 'Courier New', Courier, monospace;
-         }
-         .markdown pre code {
-              background-color: transparent;
-              padding: 0;
-          }
-          .markdown code:not(pre code) {
-               background-color: rgba(75, 85, 99, 0.7);
-               padding: 0.1em 0.3em;
-               border-radius: 3px;
-           }
-           .light .markdown pre { background-color: rgba(229, 231, 235, 0.8); }
-           .light .markdown code:not(pre code) { background-color: rgba(209, 213, 219, 0.8); }
+        /* Responsive Layout Adjustments */
+        #ai-assistant-wrapper { border-left: 1px solid var(--border-color); }
+        .dark #ai-assistant-wrapper { border-left-color: var(--border-dark); }
+        .light #ai-assistant-wrapper { border-left-color: var(--border-light); }
 
     </style>
 </head>
-<body class="dark">
-    <div class="min-h-screen px-4 py-6">
-        <!-- Header -->
-        <header class="flex justify-between items-center mb-6">
-            <div class="flex items-center">
-                <div class="hamburger mr-4" id="menuBtn">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-                <h1 class="text-2xl font-bold gradient-text">Excel Processor</h1>
-            </div>
-            <div class="flex items-center">
-                <span class="mr-2"><i class="fas fa-moon"></i></span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="themeToggle">
-                    <span class="toggle-slider"></span>
-                </label>
-                <span class="ml-2"><i class="fas fa-sun"></i></span>
-            </div>
-        </header>
+<body class="light"> <!-- Start in light mode -->
 
-        <!-- Sidenav for Filters and Columns -->
-        <div class="sidenav glass dark hide-scroll" id="filterSidenav">
-            <span class="close-btn" id="closeFilterBtn">×</span>
-            <div class="p-4">
-                <!-- Column Management Section -->
-                <div class="manage-columns-container">
-                    <div class="flex justify-between items-center cursor-pointer" id="manageColumnsToggle">
-                        <h2 class="text-xl font-bold">Manage Columns</h2>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="manage-columns hide-scroll" id="manageColumnsSection">
-                        <div class="grid grid-cols-1 gap-1 mt-3" id="columnToggleContainer">
-                            <!-- Dynamic column toggles will be added here -->
-                        </div>
-                    </div>
-                </div>
+    <!-- Header -->
+    <header class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20 bg-white dark:bg-gray-800 bg-opacity-80 dark:bg-opacity-80 backdrop-filter backdrop-blur-md">
+        <div class="flex items-center">
+            <div class="hamburger mr-4 md:hidden" id="menuBtn"> <!-- Hamburger only on small screens -->
+                <div></div> <div></div> <div></div>
+            </div>
+            <h1 class="text-xl md:text-2xl font-bold gradient-text">Excel Processor</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+             <!-- Search moved here for better visibility on larger screens -->
+             <div class="relative hidden md:block">
+                 <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                     <i class="fas fa-search"></i>
+                 </span>
+                 <input type="text" id="searchInputHeader" class="input-field pl-10 pr-4 py-1 text-sm w-48 lg:w-64" placeholder="Search current file...">
+             </div>
+             <button id="themeToggleBtn" class="btn-icon text-lg">
+                 <i class="fas fa-moon"></i> <!-- Initial icon for light mode -->
+             </button>
+             <div class="hamburger hidden md:block" id="menuBtnDesktop"> <!-- Hamburger for Desktop -->
+                 <div></div> <div></div> <div></div>
+             </div>
+        </div>
+    </header>
 
-                <!-- Filters Section -->
-                <div>
-                    <h2 class="text-xl font-bold mb-4">Filters</h2>
-                    <div id="filterContainer">
-                        <div class="filter-item">
-                            <label for="skillsetFilter" class="block mb-2 font-medium">Primary Skill</label>
-                            <input type="text" id="skillsetFilter" class="input-field" placeholder="Enter skills (comma separated)">
-                        </div>
-                        <!-- Dynamic filters based on visible columns will be added here -->
-                    </div>
-                    <button id="applyFiltersBtn" class="btn btn-primary w-full mt-4">Apply Filters</button>
-                    <button id="resetFiltersBtn" class="btn btn-secondary w-full mt-2">Reset Filters</button>
+    <!-- Sidenav for Filters and Columns (Fly-out) -->
+    <div class="sidenav glass hide-scroll" id="filterSidenav"> <!-- Removed theme class, applied dynamically -->
+        <span class="close-btn" id="closeFilterBtn">×</span>
+        <div class="p-4">
+            <!-- Column Management Section -->
+            <div class="manage-columns-container">
+                <div class="flex justify-between items-center cursor-pointer mb-2" id="manageColumnsToggle">
+                    <h2 class="text-lg font-semibold">Manage Columns</h2>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
+                <div class="manage-columns hide-scroll" id="manageColumnsSection">
+                    <div class="grid grid-cols-1 gap-1 mt-1" id="columnToggleContainer"></div>
+                </div>
+            </div>
+            <hr class="my-4 border-gray-300 dark:border-gray-600">
+            <!-- Filters Section -->
+            <div>
+                <h2 class="text-lg font-semibold mb-3">Filters</h2>
+                <div id="filterContainer">
+                    <div class="filter-item">
+                        <label for="skillsetFilter" class="block mb-1 text-sm font-medium">Primary Skill</label>
+                        <input type="text" id="skillsetFilter" class="input-field text-sm" placeholder="Comma-separated skills">
+                    </div>
+                </div>
+                <button id="applyFiltersBtn" class="btn btn-primary w-full mt-4 text-sm">Apply Filters</button>
+                <button id="resetFiltersBtn" class="btn btn-secondary w-full mt-2 text-sm">Reset Filters</button>
             </div>
         </div>
+    </div>
 
-        <!-- Main Content -->
-        <main>
+    <!-- Main Content Area (Flex wrapper) -->
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- Primary Content Area (Left/Center) -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6">
+
+             <!-- Search for small screens -->
+             <section class="mb-4 md:hidden">
+                 <div class="relative">
+                      <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <i class="fas fa-search"></i>
+                      </span>
+                      <input type="text" id="searchInputMobile" class="input-field pl-10 pr-4 py-2 text-sm w-full" placeholder="Search current file...">
+                 </div>
+             </section>
+
             <!-- File Upload Section -->
-            <section class="glass dark p-4 rounded-lg mb-6">
+            <section class="glass p-4 rounded-lg mb-6">
                 <div class="flex flex-col items-center">
-                    <label for="excelFile" class="btn btn-primary mb-2 pulse-animation">
+                    <label for="excelFile" class="btn btn-primary mb-2 pulse-animation text-sm">
                         <i class="fas fa-file-excel mr-2"></i>Upload Excel
                     </label>
                     <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden">
@@ -564,118 +251,100 @@
                 </div>
             </section>
 
-            <!-- Search Section -->
-            <section class="glass dark p-4 rounded-lg mb-6">
-                <div class="flex items-center">
-                    <i class="fas fa-search mr-2"></i>
-                    <input type="text" id="searchInput" class="input-field" placeholder="Search across visible columns in current file...">
-                </div>
-            </section>
-
-            <!-- AI Assistant Section -->
-            <section class="glass dark p-4 rounded-lg mb-6">
-                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-medium"><i class="fas fa-robot mr-2"></i>AI Assistant</h2>
-                </div>
-                <div class="flex items-center mb-2">
-                    <input type="text" id="aiQuestion" class="input-field" placeholder="Ask about the data in the 'All Data' tab...">
-                    <button id="askAiBtn" class="btn btn-primary ml-2">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-                <div id="aiResponseContainer" class="ai-response glass dark hide-scroll">
-                    <p class="text-sm opacity-70">Upload a file and ask a question about its data...</p>
-                </div>
-            </section>
-
             <!-- Tabs -->
-            <div class="mb-4 flex border-b border-gray-600">
-                <button id="allDataTab" class="py-2 px-4 font-medium tab-btn active">All Data</button>
-                <button id="shortlistedTab" class="py-2 px-4 font-medium tab-btn">Shortlisted</button>
+            <div class="mb-4 flex border-b border-gray-300 dark:border-gray-600">
+                <button id="allDataTab" class="py-2 px-4 font-medium tab-btn active text-sm">All Data</button>
+                <button id="shortlistedTab" class="py-2 px-4 font-medium tab-btn text-sm">Shortlisted</button>
             </div>
 
-            <!-- All Data Tab -->
+            <!-- All Data Tab Content -->
             <div id="allDataContent" class="tab active">
                 <div class="mb-4 flex items-center">
-                     <button id="addToShortlistBtn" class="btn btn-secondary" disabled>
-                         <i class="fas fa-plus-circle mr-2"></i>Add Selected to Shortlist (<span id="selectedRowCount">0</span>)
+                     <button id="addToShortlistBtn" class="btn btn-secondary text-sm" disabled>
+                         <i class="fas fa-plus-circle mr-2"></i>Add Selected (<span id="selectedRowCount">0</span>)
                      </button>
-                     <span id="addShortlistStatus" class="ml-4 text-sm text-green-400"></span>
+                     <span id="addShortlistStatus" class="ml-4 text-sm text-green-500 dark:text-green-400"></span>
                 </div>
-                <div class="glass dark table-container">
+                <div class="glass table-container">
                     <table id="dataTable">
                         <thead>
-                            <tr id="tableHeader">
-                                <th><input type="checkbox" id="selectAllCheckbox" title="Select/Deselect all rows in this view"></th>
-                                <!-- Dynamic headers will be added here -->
-                            </tr>
+                            <tr id="tableHeader"></tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <!-- Table data will be populated dynamically -->
-                        </tbody>
+                        <tbody id="tableBody"></tbody>
                     </table>
                 </div>
-                <div id="noDataMessage" class="text-center py-4">
+                <div id="noDataMessage" class="text-center py-4 text-gray-500 dark:text-gray-400">
                     <p>Upload an Excel file to get started</p>
                 </div>
             </div>
 
-            <!-- Shortlisted Tab -->
+            <!-- Shortlisted Tab Content -->
             <div id="shortlistedContent" class="tab">
-                <div class="mb-4 flex justify-between items-center">
-                    <button id="exportExcelBtn" class="btn btn-secondary" disabled>
+                <div class="mb-4 flex flex-wrap gap-2 justify-between items-center">
+                    <button id="exportExcelBtn" class="btn btn-secondary text-sm" disabled>
                         <i class="fas fa-file-export mr-2"></i>Export Shortlist
                     </button>
-                     <button id="clearAllShortlistedBtn" class="btn btn-danger" disabled>
-                         <i class="fas fa-trash-alt mr-2"></i>Clear All Shortlisted
+                     <button id="clearAllShortlistedBtn" class="btn btn-danger text-sm" disabled>
+                         <i class="fas fa-trash-alt mr-2"></i>Clear All
                      </button>
                 </div>
-
-                <div id="shortlistedGroupsContainer">
-                    <!-- Groups will be dynamically added here -->
-                </div>
-
-                <div id="noShortlistedMessage" class="text-center py-4">
+                <div id="shortlistedGroupsContainer"></div>
+                <div id="noShortlistedMessage" class="text-center py-4 text-gray-500 dark:text-gray-400">
                     <p>No items have been shortlisted yet</p>
                 </div>
-
-                <div id="feedbackForm" class="feedback-form glass dark hidden fixed bottom-4 right-4 w-80 z-20 shadow-lg border border-gray-700">
-                    <div class="flex justify-between items-center mb-3">
-                         <h3 class="text-lg font-medium">Add/Edit Feedback</h3>
-                         <button id="cancelFeedbackBtn" class="text-gray-400 hover:text-white text-2xl leading-none">×</button>
-                    </div>
-                    <input type="hidden" id="feedbackRowId">
-                    <div class="feedback-item">
-                        <label for="feedbackText" class="block mb-1 text-sm">Feedback Notes:</label>
-                        <textarea id="feedbackText" class="input-field text-sm" rows="4"></textarea>
-                    </div>
-                    <div class="feedback-item flex items-center mt-2">
-                        <input type="checkbox" id="contactedCheckbox" class="mr-2">
-                        <label for="contactedCheckbox" class="text-sm">Candidate Contacted</label>
-                    </div>
-                    <div class="flex justify-end mt-3">
-                        <button id="saveFeedbackBtn" class="btn btn-primary text-sm">Save Feedback</button>
-                    </div>
-                </div>
+                <!-- Feedback Form moved outside main scroll area -->
             </div>
+
         </main>
-    </div>
+
+        <!-- AI Assistant Area (Right Sidebar - visible on medium screens and up) -->
+        <aside id="ai-assistant-wrapper" class="w-full md:w-80 lg:w-96 p-4 md:p-6 overflow-y-auto hidden md:flex flex-col glass border-l border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold mb-3 flex items-center"><i class="fas fa-robot mr-2 text-primary"></i>AI Assistant</h2>
+            <div class="flex items-center mb-2">
+                <input type="text" id="aiQuestion" class="input-field text-sm flex-grow" placeholder="Ask about 'All Data' tab...">
+                <button id="askAiBtn" class="btn btn-primary ml-2 text-sm p-2 leading-none">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div id="aiResponseContainer" class="ai-response flex-1 hide-scroll text-sm">
+                <p class="text-sm opacity-70">Upload a file and ask a question about its data...</p>
+            </div>
+        </aside>
+
+         <!-- Feedback Form (Fixed Position) -->
+         <div id="feedbackForm" class="feedback-form glass hidden fixed bottom-4 right-4 w-80 z-40 shadow-lg border" > <!-- Removed theme class -->
+             <div class="flex justify-between items-center mb-3">
+                 <h3 class="text-base font-semibold">Add/Edit Feedback</h3>
+                 <button id="cancelFeedbackBtn" class="text-gray-400 hover:text-red-500 text-2xl leading-none">×</button>
+             </div>
+             <input type="hidden" id="feedbackRowId">
+             <div class="feedback-item">
+                 <label for="feedbackText" class="block mb-1 text-xs font-medium">Feedback Notes:</label>
+                 <textarea id="feedbackText" class="input-field text-sm" rows="4"></textarea>
+             </div>
+             <div class="feedback-item flex items-center mt-2">
+                 <input type="checkbox" id="contactedCheckbox" class="mr-2 h-4 w-4">
+                 <label for="contactedCheckbox" class="text-sm">Candidate Contacted</label>
+             </div>
+             <div class="flex justify-end mt-3">
+                 <button id="saveFeedbackBtn" class="btn btn-primary text-sm">Save Feedback</button>
+             </div>
+         </div>
+
+    </div> <!-- End Main Flex Wrapper -->
 
     <script>
         // =============== GLOBAL VARIABLES ===============
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
-        let excelData = [];
-        let filteredData = [];
-        let shortlistedData = [];
-        let allHeaders = [];
-        let visibleColumns = [];
-        let theme = 'dark';
-        let feedbackData = {};
-        let currentFileName = null;
+        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"; // Replace or use secure method
+        let excelData = []; let filteredData = []; let shortlistedData = [];
+        let allHeaders = []; let visibleColumns = [];
+        let theme = 'light'; // Default to light mode
+        let feedbackData = {}; let currentFileName = null;
 
         // =============== DOM ELEMENTS ===============
-        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
         const menuBtn = document.getElementById('menuBtn');
+        const menuBtnDesktop = document.getElementById('menuBtnDesktop'); // Hamburger for Desktop
         const filterSidenav = document.getElementById('filterSidenav');
         const closeFilterBtn = document.getElementById('closeFilterBtn');
         const excelFileInput = document.getElementById('excelFile');
@@ -689,7 +358,8 @@
         const filterContainer = document.getElementById('filterContainer');
         const applyFiltersBtn = document.getElementById('applyFiltersBtn');
         const resetFiltersBtn = document.getElementById('resetFiltersBtn');
-        const searchInput = document.getElementById('searchInput');
+        const searchInputHeader = document.getElementById('searchInputHeader'); // Search in header
+        const searchInputMobile = document.getElementById('searchInputMobile'); // Search for mobile
         const allDataTab = document.getElementById('allDataTab');
         const shortlistedTab = document.getElementById('shortlistedTab');
         const allDataContent = document.getElementById('allDataContent');
@@ -713,13 +383,16 @@
         const addShortlistStatus = document.getElementById('addShortlistStatus');
 
         // =============== EVENT LISTENERS ===============
-        themeToggle.addEventListener('change', toggleTheme);
+        themeToggleBtn.addEventListener('click', toggleTheme);
         menuBtn.addEventListener('click', toggleMenu);
+        menuBtnDesktop.addEventListener('click', toggleMenu); // Desktop hamburger controls menu too
         closeFilterBtn.addEventListener('click', closeMenu);
         excelFileInput.addEventListener('change', handleFileUpload);
         applyFiltersBtn.addEventListener('click', applyFilters);
         resetFiltersBtn.addEventListener('click', resetFilters);
-        searchInput.addEventListener('input', debounce(handleSearch, 300));
+        // Use debounce for both search inputs
+        searchInputHeader.addEventListener('input', debounce(handleSearch, 300));
+        searchInputMobile.addEventListener('input', debounce(handleSearch, 300));
         allDataTab.addEventListener('click', () => switchTab('all'));
         shortlistedTab.addEventListener('click', () => switchTab('shortlisted'));
         exportExcelBtn.addEventListener('click', exportToExcel);
@@ -731,656 +404,298 @@
         saveFeedbackBtn.addEventListener('click', saveFeedback);
         shortlistedGroupsContainer.addEventListener('click', handleShortlistDeleteClick);
         addToShortlistBtn.addEventListener('click', addSelectedToShortlist);
-        tableBody.addEventListener('change', handleTableBodyChange); // Listen for checkbox changes in table body
+        tableBody.addEventListener('change', handleTableBodyChange);
 
         // =============== FUNCTIONS ===============
 
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
+                const later = () => { clearTimeout(timeout); func(...args); };
+                clearTimeout(timeout); timeout = setTimeout(later, wait);
             };
         }
 
         function toggleTheme() {
             const body = document.body;
-            const elementsToToggle = document.querySelectorAll('.glass, .sidenav, .ai-response, .feedback-form');
-
-            if (themeToggle.checked) {
-                body.classList.remove('dark'); body.classList.add('light');
-                elementsToToggle.forEach(el => { el.classList.remove('dark'); el.classList.add('light'); });
-                theme = 'light';
-            } else {
-                body.classList.remove('light'); body.classList.add('dark');
-                elementsToToggle.forEach(el => { el.classList.remove('light'); el.classList.add('dark'); });
-                theme = 'dark';
-            }
-            if (shortlistedContent.classList.contains('active')) {
-                renderShortlistedTable();
-            }
+            const isDark = body.classList.contains('dark');
+            theme = isDark ? 'light' : 'dark'; // Determine new theme
+            body.classList.toggle('dark', !isDark);
+            body.classList.toggle('light', isDark);
+            // Toggle icon
+            themeToggleBtn.innerHTML = `<i class="fas ${isDark ? 'fa-moon' : 'fa-sun'}"></i>`;
+             // Apply theme class to sidenav and feedback form explicitly
+             filterSidenav.classList.toggle('dark', !isDark);
+             filterSidenav.classList.toggle('light', isDark);
+             feedbackForm.classList.toggle('dark', !isDark);
+             feedbackForm.classList.toggle('light', isDark);
+            if (shortlistedContent.classList.contains('active')) renderShortlistedTable();
         }
 
         function toggleMenu() {
             menuBtn.classList.toggle('active');
+            menuBtnDesktop.classList.toggle('active'); // Toggle desktop hamburger too
             filterSidenav.style.width = filterSidenav.style.width === "280px" ? "0" : "280px";
         }
-
         function closeMenu() {
             menuBtn.classList.remove('active');
+            menuBtnDesktop.classList.remove('active');
             filterSidenav.style.width = "0";
         }
-
         function toggleManageColumns() {
             const chevron = manageColumnsToggle.querySelector('i');
             manageColumnsSection.classList.toggle('expanded');
-            chevron.classList.toggle('fa-chevron-down');
-            chevron.classList.toggle('fa-chevron-up');
+            chevron.classList.toggle('fa-chevron-down'); chevron.classList.toggle('fa-chevron-up');
         }
 
         function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            currentFileName = file.name;
-            fileName.textContent = `Processing: ${currentFileName}...`;
-            excelFileInput.disabled = true;
-            document.querySelector('label[for="excelFile"]').classList.remove('pulse-animation');
+            const file = e.target.files[0]; if (!file) return;
+            currentFileName = file.name; fileName.textContent = `Processing: ${currentFileName}...`;
+            excelFileInput.disabled = true; document.querySelector('label[for="excelFile"]').classList.remove('pulse-animation');
             addShortlistStatus.textContent = '';
-
             const reader = new FileReader();
             reader.onload = (event) => {
                 const data = new Uint8Array(event.target.result);
                 try {
                     const workbook = XLSX.read(data, { type: 'array' });
-                    if (!workbook.SheetNames || workbook.SheetNames.length === 0) throw new Error("No sheets found.");
+                    if (!workbook.SheetNames?.length) throw new Error("No sheets found.");
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
                     if (jsonData.length > 0) {
-                        processExcelData(jsonData, currentFileName);
-                        fileName.textContent = `Loaded: ${currentFileName}`;
-                    } else {
-                        alert("File is empty or has no data.");
-                        resetCurrentFileState();
-                        fileName.textContent = `Empty file: ${currentFileName}`;
-                    }
-                } catch (error) {
-                    console.error("Error reading Excel:", error);
-                    alert(`Error reading "${currentFileName}": ${error.message}.`);
-                    resetCurrentFileState();
-                    fileName.textContent = `Error loading: ${currentFileName}`;
-                } finally {
-                    excelFileInput.disabled = false;
-                    excelFileInput.value = '';
-                    document.querySelector('label[for="excelFile"]').classList.add('pulse-animation');
-                }
+                        processExcelData(jsonData, currentFileName); fileName.textContent = `Loaded: ${currentFileName}`;
+                    } else { alert("File is empty."); resetCurrentFileState(); fileName.textContent = `Empty: ${currentFileName}`; }
+                } catch (error) { console.error("Excel Read Error:", error); alert(`Error reading "${currentFileName}": ${error.message}.`); resetCurrentFileState(); fileName.textContent = `Error: ${currentFileName}`; }
+                 finally { excelFileInput.disabled = false; excelFileInput.value = ''; document.querySelector('label[for="excelFile"]').classList.add('pulse-animation'); }
             };
-            reader.onerror = () => {
-                console.error("FileReader error:", reader.error);
-                alert(`Error reading file "${currentFileName}".`);
-                resetCurrentFileState();
-                fileName.textContent = `Error reading: ${currentFileName}`;
-                excelFileInput.disabled = false;
-                excelFileInput.value = '';
-                document.querySelector('label[for="excelFile"]').classList.add('pulse-animation');
-            };
+            reader.onerror = () => { console.error("FileReader Error:", reader.error); alert(`Error reading "${currentFileName}".`); resetCurrentFileState(); fileName.textContent = `Read Error: ${currentFileName}`; excelFileInput.disabled = false; excelFileInput.value = ''; document.querySelector('label[for="excelFile"]').classList.add('pulse-animation'); };
             reader.readAsArrayBuffer(file);
         }
 
         function processExcelData(data, sourceFileName) {
-            excelData = [];
-            filteredData = [];
+            excelData = []; filteredData = [];
             allHeaders = data[0].map(h => String(h || '').trim()).filter(Boolean);
-            if (allHeaders.length === 0) {
-                alert(`No headers found in "${sourceFileName}".`);
-                resetCurrentFileState(); return;
-            }
+            if (allHeaders.length === 0) { alert(`No headers in "${sourceFileName}".`); resetCurrentFileState(); return; }
             if (visibleColumns.length === 0) visibleColumns = [...allHeaders];
-
             let rowsAdded = 0;
             for (let i = 1; i < data.length; i++) {
-                const row = data[i];
-                if (!row || row.length === 0 || row.every(cell => cell === null || cell === undefined || String(cell).trim() === '')) continue;
+                const row = data[i]; if (!row?.length || row.every(cell => cell == null || String(cell).trim() === '')) continue;
                 const rowData = {};
-                for (let j = 0; j < allHeaders.length; j++) rowData[allHeaders[j]] = row[j] || '';
-                rowData._id = `${sourceFileName}-row-${i}`;
-                rowData._sourceFile = sourceFileName;
-                excelData.push(rowData);
-                rowsAdded++;
+                for (let j = 0; j < allHeaders.length; j++) rowData[allHeaders[j]] = row[j] ?? '';
+                rowData._id = `${sourceFileName}-row-${i}`; rowData._sourceFile = sourceFileName;
+                excelData.push(rowData); rowsAdded++;
             }
-            if (rowsAdded === 0) {
-                alert(`No data rows found in "${sourceFileName}".`);
-                resetCurrentFileState(); return;
-            }
+            if (rowsAdded === 0) { alert(`No data rows in "${sourceFileName}".`); resetCurrentFileState(); return; }
             filteredData = [...excelData];
-            createColumnToggles();
-            renderTable();
-            createFilterOptions();
-            updateShortlistedTab();
-            noDataMessage.style.display = 'none';
-            noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
-            switchTab('all');
-            resetFilters();
-            searchInput.value = '';
-            updateAddToShortlistButtonState(); // Reset button state for new file
+            createColumnToggles(); renderTable(); createFilterOptions(); updateShortlistedTab();
+            noDataMessage.style.display = 'none'; noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
+            switchTab('all'); resetFilters(); searchInputHeader.value = ''; searchInputMobile.value = ''; updateAddToShortlistButtonState();
         }
 
         function resetCurrentFileState() {
-            excelData = [];
-            filteredData = [];
-            allHeaders = [];
+            excelData = []; filteredData = []; allHeaders = [];
             tableHeader.innerHTML = '<th><input type="checkbox" id="selectAllCheckbox" title="Select/Deselect all rows in this view"></th>';
             tableBody.innerHTML = '';
-            const selectAll = document.getElementById('selectAllCheckbox');
-            if (selectAll) selectAll.disabled = true;
-            noDataMessage.style.display = 'block';
-            noDataMessage.textContent = "Upload an Excel file or check previous file for errors.";
-            updateAddToShortlistButtonState(); // Update button state
+            const selectAll = document.getElementById('selectAllCheckbox'); if (selectAll) selectAll.disabled = true;
+            noDataMessage.style.display = 'block'; noDataMessage.textContent = "Upload an Excel file or check previous file for errors.";
+            updateAddToShortlistButtonState();
         }
 
         function renderTable() {
-            tableHeader.innerHTML = '';
-            tableBody.innerHTML = '';
-            addShortlistStatus.textContent = ''; // Clear status on re-render
-
-            const thCheckbox = document.createElement('th');
-            const newSelectAllCheckbox = document.createElement('input');
-            newSelectAllCheckbox.type = 'checkbox';
-            newSelectAllCheckbox.id = 'selectAllCheckbox';
-            newSelectAllCheckbox.title = 'Select/Deselect all rows currently visible in this table';
-            newSelectAllCheckbox.addEventListener('change', toggleSelectAll);
-            thCheckbox.appendChild(newSelectAllCheckbox);
-            tableHeader.appendChild(thCheckbox);
-
-            visibleColumns.forEach(header => {
-                if (allHeaders.includes(header)) {
-                    const th = document.createElement('th');
-                    th.textContent = header;
-                    tableHeader.appendChild(th);
-                }
-            });
-
+            tableHeader.innerHTML = ''; tableBody.innerHTML = ''; addShortlistStatus.textContent = '';
+            const thCheckbox = document.createElement('th'); const newSelectAllCheckbox = document.createElement('input');
+            newSelectAllCheckbox.type = 'checkbox'; newSelectAllCheckbox.id = 'selectAllCheckbox';
+            newSelectAllCheckbox.title = 'Select/Deselect all visible rows'; newSelectAllCheckbox.addEventListener('change', toggleSelectAll);
+            thCheckbox.appendChild(newSelectAllCheckbox); tableHeader.appendChild(thCheckbox);
+            visibleColumns.forEach(header => { if (allHeaders.includes(header)) { const th = document.createElement('th'); th.textContent = header; tableHeader.appendChild(th); } });
             filteredData.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.dataset.id = row._id;
-
-                const checkboxCell = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'row-checkbox';
-                checkbox.dataset.id = row._id;
-                // Checkbox state is now purely for selection, starts unchecked
-                checkbox.checked = false;
-                checkboxCell.appendChild(checkbox);
-                tr.appendChild(checkboxCell);
-
-                visibleColumns.forEach(header => {
-                    if (allHeaders.includes(header)) {
-                        const td = document.createElement('td');
-                        td.textContent = String(row[header] ?? '');
-                        tr.appendChild(td);
-                    }
-                });
+                const tr = document.createElement('tr'); tr.dataset.id = row._id;
+                const checkboxCell = document.createElement('td'); const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox'; checkbox.className = 'row-checkbox'; checkbox.dataset.id = row._id; checkbox.checked = false;
+                checkboxCell.appendChild(checkbox); tr.appendChild(checkboxCell);
+                visibleColumns.forEach(header => { if (allHeaders.includes(header)) { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); } });
                 tableBody.appendChild(tr);
             });
-
             const currentSelectAllCheckbox = document.getElementById('selectAllCheckbox');
-            if (currentSelectAllCheckbox) {
-                currentSelectAllCheckbox.disabled = filteredData.length === 0;
-                currentSelectAllCheckbox.checked = false; // Start unchecked
-            }
-
+            if (currentSelectAllCheckbox) { currentSelectAllCheckbox.disabled = filteredData.length === 0; currentSelectAllCheckbox.checked = false; }
             noDataMessage.style.display = excelData.length === 0 ? 'block' : (filteredData.length === 0 ? 'block' : 'none');
-            if (excelData.length > 0 && filteredData.length === 0) {
-                noDataMessage.textContent = "No data matches the current filters or search.";
-            } else if (excelData.length === 0) {
-                noDataMessage.textContent = "Upload an Excel file to get started";
-            }
-             updateAddToShortlistButtonState(); // Update button state after rendering
+            if (excelData.length > 0 && filteredData.length === 0) noDataMessage.textContent = "No data matches filters/search.";
+            else if (excelData.length === 0) noDataMessage.textContent = "Upload an Excel file.";
+            updateAddToShortlistButtonState();
         }
 
         function renderShortlistedTable() {
-             shortlistedGroupsContainer.innerHTML = '';
-             noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
-             if (shortlistedData.length === 0) return;
-
-             const groupedData = shortlistedData.reduce((acc, row) => {
-                 const fileKey = row._sourceFile || 'Unknown File';
-                 if (!acc[fileKey]) acc[fileKey] = [];
-                 acc[fileKey].push(row);
-                 return acc;
-             }, {});
-
-             Object.entries(groupedData).forEach(([filename, rows]) => {
-                 const groupWrapper = document.createElement('div');
-                 groupWrapper.className = 'shortlist-group';
-                 const details = document.createElement('details');
-                 details.open = true;
-                 const summary = document.createElement('summary');
-                 const summaryText = document.createElement('span');
-                 summaryText.textContent = `${filename} (${rows.length} shortlisted)`;
-                 summaryText.className = 'mr-auto';
-                 const groupDeleteBtn = document.createElement('button');
-                 groupDeleteBtn.className = 'group-delete-btn';
-                 groupDeleteBtn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Delete Group';
-                 groupDeleteBtn.title = `Remove all ${rows.length} items from ${filename}`;
-                 groupDeleteBtn.dataset.filename = filename;
-                 summary.append(summaryText, groupDeleteBtn);
-
-                 const groupContent = document.createElement('div');
-                 groupContent.className = 'group-content';
-                 const tableContainer = document.createElement('div');
-                 tableContainer.className = `glass table-container ${theme}`;
-                 const table = document.createElement('table');
-                 const thead = document.createElement('thead');
-                 const tbody = document.createElement('tbody');
-                 table.append(thead, tbody);
-                 tableContainer.appendChild(table);
-                 groupContent.appendChild(tableContainer);
-
-                 const headerRow = document.createElement('tr');
-                 visibleColumns.forEach(header => {
-                     const th = document.createElement('th'); th.textContent = header; headerRow.appendChild(th);
-                 });
-                 headerRow.innerHTML += `<th>Feedback</th><th>Contacted</th><th class="text-center">Action</th>`;
-                 thead.appendChild(headerRow);
-
-                 rows.forEach(row => {
-                     const tr = document.createElement('tr'); tr.dataset.id = row._id;
-                     visibleColumns.forEach(header => {
-                         const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td);
-                     });
-                     const feedbackTd = document.createElement('td');
-                     const feedbackBtn = document.createElement('button');
-                     feedbackBtn.innerHTML = '<i class="fas fa-comment-dots"></i>';
-                     feedbackBtn.className = 'p-1 rounded text-white text-xs';
-                     const hasFeedback = feedbackData[row._id]?.feedback;
-                     feedbackBtn.classList.add(hasFeedback ? 'bg-blue-500' : 'bg-gray-500');
-                     feedbackBtn.title = hasFeedback ? `View/Edit: ${feedbackData[row._id].feedback.substring(0,50)}...` : 'Add Feedback';
-                     feedbackBtn.addEventListener('click', () => showFeedbackForm(row._id));
-                     feedbackTd.appendChild(feedbackBtn); tr.appendChild(feedbackTd);
-                     const contactedTd = document.createElement('td');
-                     const contactedIcon = document.createElement('i');
-                     const isContacted = feedbackData[row._id]?.contacted;
-                     contactedIcon.className = `fas fa-circle text-xs ${isContacted ? 'text-green-500' : 'text-red-500'}`;
-                     contactedIcon.title = isContacted ? 'Contacted' : 'Not Contacted';
-                     contactedTd.appendChild(contactedIcon); tr.appendChild(contactedTd);
-                     const deleteTd = document.createElement('td'); deleteTd.className = 'text-center';
-                     const rowDeleteBtn = document.createElement('button'); rowDeleteBtn.className = 'row-delete-btn';
-                     rowDeleteBtn.innerHTML = '<i class="fas fa-times"></i>'; rowDeleteBtn.title = 'Remove item';
-                     rowDeleteBtn.dataset.id = row._id;
-                     deleteTd.appendChild(rowDeleteBtn); tr.appendChild(deleteTd);
-                     tbody.appendChild(tr);
-                 });
-                 details.append(summary, groupContent);
-                 groupWrapper.appendChild(details);
-                 shortlistedGroupsContainer.appendChild(groupWrapper);
-             });
-         }
+            shortlistedGroupsContainer.innerHTML = ''; noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none'; if (shortlistedData.length === 0) return;
+            const groupedData = shortlistedData.reduce((acc, row) => { const fileKey = row._sourceFile || 'Unknown'; if (!acc[fileKey]) acc[fileKey] = []; acc[fileKey].push(row); return acc; }, {});
+            Object.entries(groupedData).forEach(([filename, rows]) => {
+                const groupWrapper = document.createElement('div'); groupWrapper.className = 'shortlist-group';
+                const details = document.createElement('details'); details.open = true;
+                const summary = document.createElement('summary'); const summaryText = document.createElement('span');
+                summaryText.textContent = `${filename} (${rows.length} shortlisted)`; summaryText.className = 'mr-auto';
+                const groupDeleteBtn = document.createElement('button'); groupDeleteBtn.className = 'group-delete-btn';
+                groupDeleteBtn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Del Group'; groupDeleteBtn.title = `Remove all from ${filename}`; groupDeleteBtn.dataset.filename = filename;
+                summary.append(summaryText, groupDeleteBtn);
+                const groupContent = document.createElement('div'); groupContent.className = 'group-content';
+                const tableContainer = document.createElement('div'); tableContainer.className = `glass table-container ${theme}`; // Apply theme here too
+                const table = document.createElement('table'); const thead = document.createElement('thead'); const tbody = document.createElement('tbody');
+                table.append(thead, tbody); tableContainer.appendChild(table); groupContent.appendChild(tableContainer);
+                const headerRow = document.createElement('tr');
+                visibleColumns.forEach(header => { const th = document.createElement('th'); th.textContent = header; headerRow.appendChild(th); });
+                headerRow.innerHTML += `<th>Feedback</th><th>Contacted</th><th class="text-center">Action</th>`; thead.appendChild(headerRow);
+                rows.forEach(row => {
+                    const tr = document.createElement('tr'); tr.dataset.id = row._id;
+                    visibleColumns.forEach(header => { const td = document.createElement('td'); td.textContent = String(row[header] ?? ''); tr.appendChild(td); });
+                    const feedbackTd = document.createElement('td'); const feedbackBtn = document.createElement('button');
+                    feedbackBtn.innerHTML = '<i class="fas fa-comment-dots"></i>'; feedbackBtn.className = 'p-1 rounded text-white text-xs';
+                    const hasFeedback = feedbackData[row._id]?.feedback; feedbackBtn.classList.add(hasFeedback ? 'bg-blue-500' : 'bg-gray-500');
+                    feedbackBtn.title = hasFeedback ? `View/Edit: ${feedbackData[row._id].feedback.substring(0,50)}...` : 'Add Feedback';
+                    feedbackBtn.addEventListener('click', () => showFeedbackForm(row._id)); feedbackTd.appendChild(feedbackBtn); tr.appendChild(feedbackTd);
+                    const contactedTd = document.createElement('td'); const contactedIcon = document.createElement('i');
+                    const isContacted = feedbackData[row._id]?.contacted; contactedIcon.className = `fas fa-circle text-xs ${isContacted ? 'text-green-500' : 'text-red-500'}`;
+                    contactedIcon.title = isContacted ? 'Contacted' : 'Not Contacted'; contactedTd.appendChild(contactedIcon); tr.appendChild(contactedTd);
+                    const deleteTd = document.createElement('td'); deleteTd.className = 'text-center'; const rowDeleteBtn = document.createElement('button');
+                    rowDeleteBtn.className = 'row-delete-btn'; rowDeleteBtn.innerHTML = '<i class="fas fa-times"></i>'; rowDeleteBtn.title = 'Remove item';
+                    rowDeleteBtn.dataset.id = row._id; deleteTd.appendChild(rowDeleteBtn); tr.appendChild(deleteTd); tbody.appendChild(tr);
+                });
+                details.append(summary, groupContent); groupWrapper.appendChild(details); shortlistedGroupsContainer.appendChild(groupWrapper);
+            });
+        }
 
         function updateShortlistedTab() {
              const count = shortlistedData.length;
              shortlistedTab.textContent = `Shortlisted${count > 0 ? ` (${count})` : ''}`;
              if (shortlistedContent.classList.contains('active')) renderShortlistedTable();
-             clearAllShortlistedBtn.disabled = count === 0;
-             exportExcelBtn.disabled = count === 0;
+             clearAllShortlistedBtn.disabled = count === 0; exportExcelBtn.disabled = count === 0;
          }
 
         function createFilterOptions() {
-             const skillsetFilterItem = filterContainer.querySelector('.filter-item:first-child');
-             filterContainer.innerHTML = '';
+             const skillsetFilterItem = filterContainer.querySelector('.filter-item:first-child'); filterContainer.innerHTML = '';
              if (skillsetFilterItem) filterContainer.appendChild(skillsetFilterItem);
              const currentFileHeaders = excelData.length > 0 ? Object.keys(excelData[0]).filter(h => h !== '_id' && h !== '_sourceFile') : allHeaders;
              visibleColumns.forEach(header => {
                  if (!currentFileHeaders.includes(header)) return;
-                 const isPrimarySkill = header.toLowerCase() === 'primary skill';
-                 if (isPrimarySkill) {
-                     const skillsetLabel = filterContainer.querySelector('label[for="skillsetFilter"]');
-                     if (skillsetLabel) skillsetLabel.textContent = header; return;
-                 }
-                 const uniqueValues = [...new Set(excelData.map(row => row[header]))]
-                     .map(val => String(val ?? '').trim()).filter(value => value !== '')
-                     .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
+                 const isPrimarySkill = header.toLowerCase() === 'primary skill'; if (isPrimarySkill) { const label = filterContainer.querySelector('label[for="skillsetFilter"]'); if (label) label.textContent = header; return; }
+                 const uniqueValues = [...new Set(excelData.map(row => row[header]))].map(val => String(val ?? '').trim()).filter(v => v !== '').sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
                  if (uniqueValues.length > 0 && uniqueValues.length < 150) {
-                     const filterItem = document.createElement('div'); filterItem.className = 'filter-item';
-                     const label = document.createElement('label');
-                     const sanitizedId = `filter-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
-                     label.htmlFor = sanitizedId; label.className = 'block mb-1 text-sm font-medium'; label.textContent = header;
-                     const select = document.createElement('select'); select.id = sanitizedId;
-                     select.className = 'input-field text-sm'; select.dataset.column = header;
-                     select.innerHTML = `<option value="">-- Select ${header} --</option>`;
-                     uniqueValues.forEach(value => {
-                         const option = document.createElement('option'); option.value = value; option.textContent = value; select.appendChild(option);
-                     });
-                     filterItem.append(label, select); filterContainer.appendChild(filterItem);
+                     const item = document.createElement('div'); item.className = 'filter-item'; const label = document.createElement('label'); const id = `filter-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
+                     label.htmlFor = id; label.className = 'block mb-1 text-sm font-medium'; label.textContent = header; const select = document.createElement('select'); select.id = id;
+                     select.className = 'input-field text-sm'; select.dataset.column = header; select.innerHTML = `<option value="">-- Select ${header} --</option>`;
+                     uniqueValues.forEach(v => { const opt = document.createElement('option'); opt.value = v; opt.textContent = v; select.appendChild(opt); });
+                     item.append(label, select); filterContainer.appendChild(item);
                  }
              });
         }
 
         function applyFilters() {
              let currentFiltered = [...excelData];
-             const skillsetFilterInput = document.getElementById('skillsetFilter');
-             const primarySkillHeader = allHeaders.find(h => h.toLowerCase() === 'primary skill');
+             const skillsetFilterInput = document.getElementById('skillsetFilter'); const primarySkillHeader = allHeaders.find(h => h.toLowerCase() === 'primary skill');
              if (primarySkillHeader && skillsetFilterInput && visibleColumns.includes(primarySkillHeader)) {
-                 const skillsetFilterValue = skillsetFilterInput.value.trim().toLowerCase();
-                 if (skillsetFilterValue) {
-                     const skills = skillsetFilterValue.split(',').map(skill => skill.trim()).filter(Boolean);
-                     if (skills.length > 0) {
-                         currentFiltered = currentFiltered.filter(row => String(row[primarySkillHeader] || '').toLowerCase().includes(skills.some(skill => primarySkill.includes(skill))));
-                     }
-                 }
+                 const val = skillsetFilterInput.value.trim().toLowerCase(); if (val) { const skills = val.split(',').map(s => s.trim()).filter(Boolean); if (skills.length > 0) currentFiltered = currentFiltered.filter(row => String(row[primarySkillHeader] || '').toLowerCase().includes(skills.some(skill => primarySkill.includes(skill)))); }
              }
-             filterContainer.querySelectorAll('select').forEach(filter => {
-                 const value = filter.value; const column = filter.dataset.column;
-                 if (value && column && visibleColumns.includes(column)) {
-                     currentFiltered = currentFiltered.filter(row => String(row[column] || '') === String(value));
-                 }
-             });
-             const searchText = searchInput.value.toLowerCase().trim();
-             if (searchText !== '') {
-                 currentFiltered = currentFiltered.filter(row => visibleColumns.some(header => row.hasOwnProperty(header) && String(row[header] || '').toLowerCase().includes(searchText)));
-             }
-             filteredData = currentFiltered;
-             renderTable();
-             closeMenu();
+             filterContainer.querySelectorAll('select').forEach(f => { const v = f.value; const c = f.dataset.column; if (v && c && visibleColumns.includes(c)) currentFiltered = currentFiltered.filter(r => String(r[c] || '') === String(v)); });
+             const search = (searchInputHeader.value || searchInputMobile.value || '').toLowerCase().trim(); // Combine search inputs
+             if (search !== '') currentFiltered = currentFiltered.filter(r => visibleColumns.some(h => r.hasOwnProperty(h) && String(r[h] || '').toLowerCase().includes(search)));
+             filteredData = currentFiltered; renderTable(); closeMenu();
         }
 
         function resetFilters() {
-            const skillsetFilterInput = document.getElementById('skillsetFilter');
-            if (skillsetFilterInput) skillsetFilterInput.value = '';
-            filterContainer.querySelectorAll('select').forEach(filter => filter.value = '');
-            searchInput.value = '';
-            applyFilters();
+            const skillset = document.getElementById('skillsetFilter'); if(skillset) skillset.value = '';
+            filterContainer.querySelectorAll('select').forEach(f => f.value = ''); searchInputHeader.value = ''; searchInputMobile.value = ''; applyFilters();
         }
 
         function createColumnToggles() {
             columnToggleContainer.innerHTML = '';
             allHeaders.forEach(header => {
-                const div = document.createElement('div'); div.className = 'checkbox-container px-2 py-1 hover:bg-gray-700 rounded';
-                const checkbox = document.createElement('input'); const sanitizedId = `toggle-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
-                checkbox.type = 'checkbox'; checkbox.id = sanitizedId; checkbox.dataset.header = header;
-                checkbox.checked = visibleColumns.includes(header);
-                checkbox.addEventListener('change', () => toggleColumn(header));
-                const label = document.createElement('label'); label.htmlFor = sanitizedId; label.textContent = header;
-                label.className = 'ml-2 cursor-pointer text-sm flex-grow';
-                div.append(checkbox, label); columnToggleContainer.appendChild(div);
+                const div = document.createElement('div'); div.className = 'checkbox-container px-2 py-1 hover:bg-gray-700 dark:hover:bg-gray-600 rounded';
+                const check = document.createElement('input'); const id = `toggle-${header.replace(/[^a-zA-Z0-9-_]/g, '-')}`;
+                check.type = 'checkbox'; check.id = id; check.dataset.header = header; check.checked = visibleColumns.includes(header);
+                check.addEventListener('change', () => toggleColumn(header)); const label = document.createElement('label'); label.htmlFor = id;
+                label.textContent = header; label.className = 'ml-2 cursor-pointer text-sm flex-grow'; div.append(check, label); columnToggleContainer.appendChild(div);
             });
         }
 
         function toggleColumn(header) {
-             const headerIndex = visibleColumns.indexOf(header);
-             if (headerIndex > -1) visibleColumns.splice(headerIndex, 1);
-             else {
-                 const newVisible = []; let added = false;
-                 allHeaders.forEach(h => {
-                     if (visibleColumns.includes(h)) newVisible.push(h);
-                     else if (h === header) { newVisible.push(h); added = true; }
-                 });
-                 if (!added) newVisible.push(header);
-                 visibleColumns = newVisible;
-             }
+             const idx = visibleColumns.indexOf(header); if (idx > -1) visibleColumns.splice(idx, 1);
+             else { const newVis = []; let added = false; allHeaders.forEach(h => { if (visibleColumns.includes(h)) newVis.push(h); else if (h === header) { newVis.push(h); added = true; } }); if (!added) newVis.push(header); visibleColumns = newVis; }
              renderTable(); updateShortlistedTab(); createFilterOptions();
          }
 
-        // --- Row Selection & Shortlisting Logic ---
-
-        function handleTableBodyChange(event) {
-             if (event.target.classList.contains('row-checkbox')) {
-                 toggleRowSelection(event.target);
-             }
-         }
-
-        function toggleRowSelection(checkbox) {
-            // Just update visual state and the button
-            const tr = checkbox.closest('tr');
-            if (tr) tr.classList.toggle('selected', checkbox.checked);
-            updateAddToShortlistButtonState();
-        }
-
-        function toggleSelectAll() {
-            const isChecked = document.getElementById('selectAllCheckbox').checked;
-            const checkboxes = tableBody.querySelectorAll('.row-checkbox');
-            checkboxes.forEach(checkbox => {
-                if(checkbox.checked !== isChecked) {
-                     checkbox.checked = isChecked;
-                     const tr = checkbox.closest('tr');
-                     if (tr) tr.classList.toggle('selected', isChecked);
-                }
-            });
-            updateAddToShortlistButtonState();
-        }
-
-         function updateAddToShortlistButtonState() {
-             const selectedCheckboxes = tableBody.querySelectorAll('.row-checkbox:checked');
-             const count = selectedCheckboxes.length;
-             selectedRowCount.textContent = count;
-             addToShortlistBtn.disabled = count === 0;
-         }
+        function handleTableBodyChange(event) { if (event.target.classList.contains('row-checkbox')) toggleRowSelectionVisual(event.target); }
+        function toggleRowSelectionVisual(checkbox) { const tr = checkbox.closest('tr'); if (tr) tr.classList.toggle('selected', checkbox.checked); updateAddToShortlistButtonState(); }
+        function toggleSelectAll() { const isChecked = document.getElementById('selectAllCheckbox').checked; tableBody.querySelectorAll('.row-checkbox').forEach(cb => { if(cb.checked !== isChecked) { cb.checked = isChecked; const tr = cb.closest('tr'); if (tr) tr.classList.toggle('selected', isChecked); } }); updateAddToShortlistButtonState(); }
+        function updateAddToShortlistButtonState() { const count = tableBody.querySelectorAll('.row-checkbox:checked').length; selectedRowCount.textContent = count; addToShortlistBtn.disabled = count === 0; }
 
         function addSelectedToShortlist() {
-             const selectedCheckboxes = tableBody.querySelectorAll('.row-checkbox:checked');
-             if (selectedCheckboxes.length === 0) return;
-
-             let addedCount = 0;
-             let alreadyPresentCount = 0;
-
-             selectedCheckboxes.forEach(checkbox => {
-                 const rowId = checkbox.dataset.id;
-                 const row = excelData.find(r => r._id === rowId); // Find in original data for consistency
-                 if (row) {
-                     // Check if already shortlisted
-                     if (!shortlistedData.some(sr => sr._id === rowId)) {
-                         shortlistedData.push(row);
-                         addedCount++;
-                     } else {
-                         alreadyPresentCount++;
-                     }
-                 }
-                 // Uncheck and remove selection style after processing
-                 checkbox.checked = false;
-                 const tr = checkbox.closest('tr');
-                 if (tr) tr.classList.remove('selected');
-             });
-
-             // Uncheck "Select All"
-             const selectAll = document.getElementById('selectAllCheckbox');
-             if (selectAll) selectAll.checked = false;
-
-             // Update UI
-             updateAddToShortlistButtonState(); // Reset button
-             updateShortlistedTab(); // Update shortlist count/display
-
-             // Provide feedback
-             let statusMessage = `${addedCount} item(s) added to shortlist.`;
-             if (alreadyPresentCount > 0) {
-                 statusMessage += ` ${alreadyPresentCount} item(s) were already shortlisted.`;
-             }
-             addShortlistStatus.textContent = statusMessage;
-             setTimeout(() => { addShortlistStatus.textContent = ''; }, 4000); // Clear status after a few seconds
+             const checkboxes = tableBody.querySelectorAll('.row-checkbox:checked'); if (checkboxes.length === 0) return; let added = 0, present = 0;
+             checkboxes.forEach(cb => { const id = cb.dataset.id; const row = excelData.find(r => r._id === id); if (row) { if (!shortlistedData.some(sr => sr._id === id)) { shortlistedData.push(row); added++; } else present++; } cb.checked = false; const tr = cb.closest('tr'); if (tr) tr.classList.remove('selected'); });
+             const selectAll = document.getElementById('selectAllCheckbox'); if (selectAll) selectAll.checked = false;
+             updateAddToShortlistButtonState(); updateShortlistedTab();
+             let msg = `${added} item(s) added.`; if (present > 0) msg += ` ${present} already present.`;
+             addShortlistStatus.textContent = msg; setTimeout(() => { addShortlistStatus.textContent = ''; }, 4000);
          }
 
-        // --- Search Function ---
-        function handleSearch() {
-             applyFilters(); // applyFilters now incorporates search
-         }
+        function handleSearch() { applyFilters(); }
 
         function switchTab(tab) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const contents = document.querySelectorAll('.tab');
-            tabs.forEach(t => t.classList.remove('active'));
-            contents.forEach(c => c.classList.remove('active'));
-            if (tab === 'all') {
-                allDataTab.classList.add('active'); allDataContent.classList.add('active');
-                renderTable();
-            } else {
-                shortlistedTab.classList.add('active'); shortlistedContent.classList.add('active');
-                renderShortlistedTable();
-            }
-            hideFeedbackForm();
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab').forEach(c => c.classList.remove('active'));
+            if (tab === 'all') { allDataTab.classList.add('active'); allDataContent.classList.add('active'); renderTable(); }
+            else { shortlistedTab.classList.add('active'); shortlistedContent.classList.add('active'); renderShortlistedTable(); } hideFeedbackForm();
         }
 
         function exportToExcel() {
-             if (shortlistedData.length === 0) { alert("No data to export."); return; }
-             try {
-                 const exportHeaders = [...visibleColumns, 'Feedback', 'Contacted', 'Source File'];
-                 const wsData = [exportHeaders];
-                 shortlistedData.forEach(row => {
-                     const rowData = [];
-                     visibleColumns.forEach(header => rowData.push(row[header] ?? ''));
-                     rowData.push(feedbackData[row._id]?.feedback || '');
-                     rowData.push(feedbackData[row._id]?.contacted ? 'Yes' : 'No');
-                     rowData.push(row._sourceFile || 'Unknown');
-                     wsData.push(rowData);
-                 });
-                 const ws = XLSX.utils.aoa_to_sheet(wsData);
-                 const colWidths = exportHeaders.map(h => ({ wch: h === 'Feedback' ? 40 : (h === 'Source File' ? 25 : 15) }));
-                 ws['!cols'] = colWidths;
-                 const wb = XLSX.utils.book_new();
-                 XLSX.utils.book_append_sheet(wb, ws, "Shortlisted Data");
-                 const date = new Date();
-                 const fileNameSuffix = `Shortlisted_${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}_${String(date.getHours()).padStart(2,'0')}${String(date.getMinutes()).padStart(2,'0')}.xlsx`;
-                 XLSX.writeFile(wb, fileNameSuffix);
-             } catch (error) { console.error("Export Error:", error); alert("Error exporting data."); }
+             if (shortlistedData.length === 0) { alert("No data to export."); return; } try { const headers = [...visibleColumns, 'Feedback', 'Contacted', 'Source File']; const wsData = [headers];
+             shortlistedData.forEach(r => { const rd = []; visibleColumns.forEach(h => rd.push(r[h] ?? '')); rd.push(feedbackData[r._id]?.feedback || ''); rd.push(feedbackData[r._id]?.contacted ? 'Yes' : 'No'); rd.push(r._sourceFile || 'Unknown'); wsData.push(rd); });
+             const ws = XLSX.utils.aoa_to_sheet(wsData); ws['!cols'] = headers.map(h => ({ wch: h === 'Feedback' ? 40 : (h === 'Source File' ? 25 : 15) })); const wb = XLSX.utils.book_new();
+             XLSX.utils.book_append_sheet(wb, ws, "Shortlisted"); const d = new Date(); const fn = `Shortlisted_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.xlsx`;
+             XLSX.writeFile(wb, fn); } catch (e) { console.error("Export Error:", e); alert("Error exporting."); }
          }
 
         async function askAi() {
-            const question = aiQuestion.value.trim();
-            if (!question) return;
-            if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500">AI Assistant not configured (API Key needed).</p>'; return;
-            }
+            const q = aiQuestion.value.trim(); if (!q) return; if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") { aiResponseContainer.innerHTML = '<p class="text-yellow-500">AI needs API Key.</p>'; return; }
             aiResponseContainer.innerHTML = '<p>🤖 Thinking...</p>'; askAiBtn.disabled = true; aiQuestion.disabled = true;
-            const contextData = filteredData; const contextHeaders = visibleColumns.filter(h => allHeaders.includes(h));
-            if (contextData.length === 0) {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500">No data in "All Data" tab to analyze.</p>'; askAiBtn.disabled = false; aiQuestion.disabled = false; return;
-            }
-            if (contextHeaders.length === 0) {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500">No columns visible to analyze.</p>'; askAiBtn.disabled = false; aiQuestion.disabled = false; return;
-            }
-            try {
-                let dataText = contextHeaders.join(", ") + "\n";
-                const sampleSize = Math.min(contextData.length, 30);
-                for (let i = 0; i < sampleSize; i++) dataText += contextHeaders.map(h => String(contextData[i][h] ?? '').replace(/,/g, ';') ).join(", ") + "\n";
-                const prompt = `Analyze data from "${currentFileName || 'unknown'}". Visible columns: ${contextHeaders.join(", ")}. Sample (up to ${sampleSize} rows):\n\`\`\`csv\n${dataText}\`\`\`\nContext: Possibly filtered data.\nQuestion: ${question}\nAnswer concisely based ONLY on provided sample. State if data is insufficient. Use simple markdown.`;
-                const response = await fetchGeminiResponse(prompt);
-                aiResponseContainer.innerHTML = `<div class="markdown">${formatAiResponse(response)}</div>`; aiQuestion.value = '';
-            } catch (error) { console.error("AI Error:", error); aiResponseContainer.innerHTML = `<p class="text-red-500">AI Error: ${error.message}.</p>`; }
-            finally { askAiBtn.disabled = false; aiQuestion.disabled = false; }
+            const ctxData = filteredData; const ctxHeaders = visibleColumns.filter(h => allHeaders.includes(h));
+            if (ctxData.length === 0) { aiResponseContainer.innerHTML = '<p class="text-yellow-500">No data in "All Data" tab.</p>'; askAiBtn.disabled = false; aiQuestion.disabled = false; return; }
+            if (ctxHeaders.length === 0) { aiResponseContainer.innerHTML = '<p class="text-yellow-500">No columns visible.</p>'; askAiBtn.disabled = false; aiQuestion.disabled = false; return; }
+            try { let txt = ctxHeaders.join(", ") + "\n"; const sample = Math.min(ctxData.length, 30);
+            for (let i = 0; i < sample; i++) txt += ctxHeaders.map(h => String(ctxData[i][h] ?? '').replace(/,/g, ';')).join(", ") + "\n";
+            const p = `Analyze data from "${currentFileName||'unknown'}". Cols: ${ctxHeaders.join(", ")}. Sample (up to ${sample} rows):\n\`\`\`csv\n${txt}\`\`\`\nContext: Possibly filtered.\nQ: ${q}\nAnswer concisely based ONLY on sample. State if insufficient. Use simple markdown.`;
+            const resp = await fetchGeminiResponse(p); aiResponseContainer.innerHTML = `<div class="markdown">${formatAiResponse(resp)}</div>`; aiQuestion.value = '';
+            } catch (e) { console.error("AI Error:", e); aiResponseContainer.innerHTML = `<p class="text-red-500">AI Error: ${e.message}.</p>`; } finally { askAiBtn.disabled = false; aiQuestion.disabled = false; }
          }
 
         async function fetchGeminiResponse(prompt) {
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
-            if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error?.message || `API Error ${response.status}`); }
-            const data = await response.json();
-            if (data.promptFeedback?.blockReason) throw new Error(`Blocked: ${data.promptFeedback.blockReason}`);
-            if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                if (data.candidates?.[0]?.finishReason && data.candidates[0].finishReason !== 'STOP') throw new Error(`Incomplete: ${data.candidates[0].finishReason}`);
-                throw new Error('Empty/invalid AI response.');
-            }
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+            const resp = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+            if (!resp.ok) { const err = await resp.json(); throw new Error(err.error?.message || `API Error ${resp.status}`); }
+            const data = await resp.json(); if (data.promptFeedback?.blockReason) throw new Error(`Blocked: ${data.promptFeedback.blockReason}`);
+            if (!data.candidates?.[0]?.content?.parts?.[0]?.text) { if (data.candidates?.[0]?.finishReason !== 'STOP') throw new Error(`Incomplete: ${data.candidates[0].finishReason}`); throw new Error('Empty AI response.'); }
             return data.candidates[0].content.parts[0].text;
-          }
-
-        function formatAiResponse(text) {
-             return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>').replace(/`(.*?)`/g, '<code>$1</code>').replace(/^\s*[-*+]\s+(.*)$/gm, '<li>$1</li>').replace(/(\n?\s*<li>.*?<\/li>\s*)+/gs, (match) => `<ul>${match}</ul>`).replace(/\n/g, '<br>');
-         }
-
-        function showFeedbackForm(rowId) {
-            feedbackRowId.value = rowId;
-            const data = feedbackData[rowId] || {};
-            feedbackText.value = data.feedback || '';
-            contactedCheckbox.checked = data.contacted || false;
-            feedbackForm.classList.remove('hidden');
-            feedbackText.focus();
         }
 
-        function hideFeedbackForm() {
-            feedbackForm.classList.add('hidden');
-            feedbackRowId.value = ''; feedbackText.value = ''; contactedCheckbox.checked = false;
-        }
+        function formatAiResponse(text) { return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/```([\s\S]*?)```/g,'<pre><code>$1</code></pre>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/^\s*[-*+]\s+(.*)$/gm,'<li>$1</li>').replace(/(\n?\s*<li>.*?<\/li>\s*)+/gs,(m)=>`<ul>${m}</ul>`).replace(/\n/g,'<br>'); }
 
-        function saveFeedback() {
-            const rowId = feedbackRowId.value; if (!rowId) return;
-            feedbackData[rowId] = { feedback: feedbackText.value.trim(), contacted: contactedCheckbox.checked };
-            if (shortlistedContent.classList.contains('active')) {
-                const rowElement = shortlistedGroupsContainer.querySelector(`tr[data-id="${rowId}"]`);
-                 if (rowElement) {
-                     const feedbackBtn = rowElement.querySelector('button[title*="Feedback"]');
-                     if(feedbackBtn) {
-                         const hasFeedback = feedbackData[rowId].feedback;
-                         feedbackBtn.classList.remove('bg-blue-500', 'bg-gray-500'); feedbackBtn.classList.add(hasFeedback ? 'bg-blue-500' : 'bg-gray-500');
-                         feedbackBtn.title = hasFeedback ? `View/Edit: ${feedbackData[rowId].feedback.substring(0,50)}...` : 'Add Feedback';
-                     }
-                     const contactedIcon = rowElement.querySelector('td:nth-last-child(2) i');
-                     if(contactedIcon) {
-                         const isContacted = feedbackData[rowId].contacted;
-                         contactedIcon.className = `fas fa-circle text-xs ${isContacted ? 'text-green-500' : 'text-red-500'}`;
-                         contactedIcon.title = isContacted ? 'Contacted' : 'Not Contacted';
-                     }
-                 } else { renderShortlistedTable(); } // Fallback redraw
-            }
-            hideFeedbackForm();
-        }
+        function showFeedbackForm(id) { feedbackRowId.value = id; const d = feedbackData[id] || {}; feedbackText.value = d.feedback || ''; contactedCheckbox.checked = d.contacted || false; feedbackForm.classList.remove('hidden'); feedbackText.focus(); }
+        function hideFeedbackForm() { feedbackForm.classList.add('hidden'); feedbackRowId.value = ''; feedbackText.value = ''; contactedCheckbox.checked = false; }
+        function saveFeedback() { const id = feedbackRowId.value; if (!id) return; feedbackData[id] = { feedback: feedbackText.value.trim(), contacted: contactedCheckbox.checked }; if (shortlistedContent.classList.contains('active')) { const rowEl = shortlistedGroupsContainer.querySelector(`tr[data-id="${id}"]`); if (rowEl) { const fb = rowEl.querySelector('button[title*="Feedback"]'); if(fb){ const hf=feedbackData[id].feedback; fb.classList.remove('bg-blue-500','bg-gray-500'); fb.classList.add(hf?'bg-blue-500':'bg-gray-500'); fb.title=hf?`View/Edit: ${hf.substring(0,50)}...`:'Add Feedback'; } const ci = rowEl.querySelector('td:nth-last-child(2) i'); if(ci){ const ic=feedbackData[id].contacted; ci.className=`fas fa-circle text-xs ${ic?'text-green-500':'text-red-500'}`; ci.title=ic?'Contacted':'Not Contacted'; } } else { renderShortlistedTable(); } } hideFeedbackForm(); }
 
-        function handleShortlistDeleteClick(event) {
-            const target = event.target;
-            const rowButton = target.closest('.row-delete-btn');
-            const groupButton = target.closest('.group-delete-btn');
-            if (rowButton) { const rowId = rowButton.dataset.id; if (rowId) deleteShortlistedRow(rowId); }
-            else if (groupButton) { const filename = groupButton.dataset.filename; if (filename && confirm(`Remove ALL from "${filename}"?`)) deleteShortlistedGroup(filename); }
-        }
-
-        function deleteShortlistedRow(rowId) {
-            const initialLength = shortlistedData.length;
-            shortlistedData = shortlistedData.filter(row => row._id !== rowId);
-            if(shortlistedData.length < initialLength) {
-                delete feedbackData[rowId];
-                // Don't need to uncheck main table checkbox as selection is transient now
-                updateShortlistedTab();
-            }
-        }
-
-        function deleteShortlistedGroup(filename) {
-            const rowsToRemove = shortlistedData.filter(row => (row._sourceFile || 'Unknown File') === filename);
-            if (rowsToRemove.length === 0) return;
-            const rowIdsToRemove = rowsToRemove.map(row => row._id);
-            shortlistedData = shortlistedData.filter(row => (row._sourceFile || 'Unknown File') !== filename);
-            rowIdsToRemove.forEach(rowId => delete feedbackData[rowId]);
-            updateShortlistedTab();
-        }
-
-         function clearAllShortlisted() {
-             if (shortlistedData.length === 0) return;
-             if (confirm("Clear ENTIRE shortlist (all files)? Cannot be undone.")) {
-                 shortlistedData = []; feedbackData = {};
-                 updateShortlistedTab();
-             }
-         }
+        function handleShortlistDeleteClick(event) { const t = event.target; const rb = t.closest('.row-delete-btn'); const gb = t.closest('.group-delete-btn'); if (rb) { const id = rb.dataset.id; if (id) deleteShortlistedRow(id); } else if (gb) { const fn = gb.dataset.filename; if (fn && confirm(`Remove ALL from "${fn}"?`)) deleteShortlistedGroup(fn); } }
+        function deleteShortlistedRow(id) { const len = shortlistedData.length; shortlistedData = shortlistedData.filter(r => r._id !== id); if(shortlistedData.length < len) { delete feedbackData[id]; updateShortlistedTab(); } }
+        function deleteShortlistedGroup(fn) { const rem = shortlistedData.filter(r => (r._sourceFile || 'Unknown') === fn); if (rem.length === 0) return; const ids = rem.map(r => r._id); shortlistedData = shortlistedData.filter(r => (r._sourceFile || 'Unknown') !== fn); ids.forEach(id => delete feedbackData[id]); updateShortlistedTab(); }
+        function clearAllShortlisted() { if (shortlistedData.length === 0) return; if (confirm("Clear ENTIRE shortlist? Cannot be undone.")) { shortlistedData = []; feedbackData = {}; updateShortlistedTab(); } }
 
         function initializeApp() {
-             const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-             themeToggle.checked = !prefersDark;
-             toggleTheme();
-             resetCurrentFileState();
-             updateShortlistedTab();
-             noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
-             manageColumnsSection.classList.remove('expanded');
-             const chevron = manageColumnsToggle.querySelector('i');
-             if (chevron) chevron.classList.add('fa-chevron-down');
-             hideFeedbackForm();
-             switchTab('all');
-             if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-                aiResponseContainer.innerHTML = '<p class="text-yellow-500 text-sm">AI Assistant needs API Key.</p>';
-                askAiBtn.disabled = true; aiQuestion.disabled = true;
-             }
-              updateAddToShortlistButtonState(); // Initial state
+             theme = 'light'; // Default to light
+             document.body.classList.add('light');
+             themeToggleBtn.innerHTML = `<i class="fas fa-moon"></i>`; // Moon icon for light mode
+             resetCurrentFileState(); updateShortlistedTab(); noShortlistedMessage.style.display = shortlistedData.length === 0 ? 'block' : 'none';
+             manageColumnsSection.classList.remove('expanded'); const chev = manageColumnsToggle.querySelector('i'); if (chev) chev.classList.add('fa-chevron-down');
+             hideFeedbackForm(); switchTab('all');
+             if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") { aiResponseContainer.innerHTML = '<p class="text-yellow-500 text-sm">AI needs API Key.</p>'; askAiBtn.disabled = true; aiQuestion.disabled = true; }
+             updateAddToShortlistButtonState();
+             // Apply theme to sidenav and feedback form initially
+             filterSidenav.classList.add('light'); filterSidenav.classList.remove('dark');
+             feedbackForm.classList.add('light'); feedbackForm.classList.remove('dark');
          }
-
          initializeApp();
-
     </script>
 </body>
 </html>
